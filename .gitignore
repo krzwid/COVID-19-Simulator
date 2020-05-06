@@ -1,0 +1,7 @@
+.idea
+project
+target
+build.sbt
+*.class
+*.history
+*output
