@@ -1,52 +1,56 @@
 package Model.People
 
-import Model.MapSites.{PatientRoom, Room}
+import Model.MapSites.Room
 
 class Patient(
+             private val ID: Int,
+             private var infected: Boolean,
+             private var daysSinceInfected: Int,
+             private var covidSymptoms: Boolean,
              private var otherDisease: Boolean,
              private var otherDiseaseSince: Int,
              ) extends Person {
-  private var daysSinceTreated: scala.collection.mutable.Map[Class[_], Int] = scala.collection.mutable.Map()
 
-  def this() {
-    this(false, 0)
-    daysSinceTreated.put(classOf[Doctor], 0)
-    daysSinceTreated.put(classOf[Nurse], 0)
+  private var daysSinceTreated: scala.collection.mutable.Map[Class[_], Int] = scala.collection.mutable.Map(
+    classOf[Doctor] -> 0,
+    classOf[Nurse] -> 0
+  )
 
-    println(daysSinceTreated)
-    daysSinceTreated(classOf[Doctor]) += 1
-    println(daysSinceTreated)
-  }
+  private var room: Room = null
 
   // implementations
 
-  def getID(): String = {
-    "0"
+  def getID: Int = {
+    this.ID
   }
 
-  def isInfected(): Boolean = {
-    true
+  def isInfected: Boolean = {
+    this.infected
   }
 
-  def infectedSince(): Int = {
-    10
+  def infectedSince: Int = {
+    this.daysSinceInfected
   }
 
-  def showsCovidSymptoms(): Boolean = {
-    true
+  def showsCovidSymptoms: Boolean = {
+    this.covidSymptoms
   }
 
-  def room(): Room = {
-    new PatientRoom()
+  def getRoom: Room = {
+    this.room
+  }
+
+  def goTo(room: Room): Unit = {
+    this.room = room
   }
 
   // new functions
 
-  def ifDies(): Boolean = {
+  def ifDies: Boolean = {
     true
   }
 
-  def ifRecover(): Boolean = {
+  def ifRecover: Boolean = {
     true
   }
 }

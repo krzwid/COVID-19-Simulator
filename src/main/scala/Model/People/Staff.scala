@@ -1,41 +1,42 @@
 package Model.People
 
-import Model.MapSites.{PatientRoom, Room}
+import Model.MapSites.Room
 
 class Staff(
-           ID: Int,
-           isInfected: Boolean,
-           infectedSince: Int,
-           covidSymptoms: Boolean
+           private val ID: Int,
+           private var infected: Boolean,
+           private var infectionSince: Int,
+           private var covidSymptoms: Boolean
            ) extends Person {
 
+  private var room: Room = null
 
-  def getID(): Int = {
+  def getID: Int = {
     this.ID
   }
 
-  def isInfected(): Boolean = {
-    true
+  def isInfected: Boolean = {
+    this.infected
   }
 
-  def infectedSince(): Int = {
-    10
+  def infectedSince: Int = {
+    this.infectionSince
   }
 
-  def showsCovidSymptoms(): Boolean = {
-    true
+  def showsCovidSymptoms: Boolean = {
+    this.covidSymptoms
   }
 
-  def room(): Room = {
-    new PatientRoom()
+  def getRoom: Room = {
+    this.room
   }
 
   // new fuctions
   def goTo(room: Room): Unit = {
-    println("room")
+    this.room = room
   }
 
-  def transformToPatient(): StaffPatient = {
-    new StaffPatient()
+  def transformToPatient: StaffPatient = {
+    new StaffPatient(ID, infected, infectionSince, covidSymptoms, this.getClass.toString)
   }
 }
