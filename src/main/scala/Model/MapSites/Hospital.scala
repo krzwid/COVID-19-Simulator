@@ -1,9 +1,19 @@
 package Model.MapSites
 
-class Hospital {
+import Model.People.Patient
 
-  def this(number: Int) {
-    this()
-    println(number)
+import scala.collection.mutable
+
+class Hospital {
+  private val floors = List()
+  private val newPatients = new mutable.Queue()
+
+  def freeBeds(): Int = {
+    return 0
   }
+
+  def addPatient(patient: Patient): Unit = {
+
+  }
+
 }
