@@ -7,5 +7,4 @@ trait Room {
   def canGoIn(person: Person): Boolean
   def goOut(person: Person): Unit
   def getPerson(ID: Int): Person
-
 }
