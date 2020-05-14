@@ -18,6 +18,7 @@ class StaffRoom extends Room {
   def goOut(person: Person): Unit = {
     staffs.filter(_.getID != person.getID)
   }
+
   def getPerson(ID: Int): Person = {
     staffs.find(_.getID.equals(ID)).head
   }
