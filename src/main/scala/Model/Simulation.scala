@@ -19,13 +19,19 @@ class Simulation(var config: Config,
     this.configure(configPath)
   }
 
-  def simulate: Unit = {
+  def simulate: History = {
     if (config == null) {
       println("First configure simulation, then try to run it")
-      return
+      return null
     }
 
+
+
     // HERE USE YOUR FUCKING ENGINE TO DO STUFF
+
+
+    // return history of disease
+    this.history
   }
 
   def configure(configPath: String): Unit = {
@@ -34,15 +40,12 @@ class Simulation(var config: Config,
 
     // here create Hospital, Engine, History -- depended on config
     this.hospital = new Hospital
-    this.engine = new BasicEngine
     this.history = new History
+    this.engine = new BasicEngine(this.config, this.hospital, this.history)
   }
 
   def getData: String = {
     this.config.getData
   }
 
-  def getHistory: History = {
-    this.history
-  }
 }

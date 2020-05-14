@@ -1,5 +1,7 @@
 import Model.People.{Doctor, Nurse}
 
+import scala.collection.mutable
+
 object Application {
   import Model.Simulation
   def main(args: Array[String]): Unit = {
@@ -8,6 +10,7 @@ object Application {
     simulation.configure("src\\main\\resources\\test.txt")
     simulation.getData
 
-    simulation.simulate // it should return History
+//    simulation.simulate // it should return History
+
   }
 }

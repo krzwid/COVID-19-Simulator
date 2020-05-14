@@ -15,19 +15,19 @@ trait Engine {
 
   def nextStep: Unit
 
-  def addNewPatients(hospital: Hospital): Unit
+  def addNewPatients: Unit
 
   // decide if and where to send staff
-  def manageStaff(hospital: Hospital): Unit
+  def manageStaff: Unit
 
   def removePatient: Unit
 
-  def sendNewStaff(hospital: Hospital): Unit
+  def sendNewStaff: Unit
 
-  def sendInfectedStaffToQueue(hospital: Hospital): Unit
+  def sendInfectedStaffToQueue: Unit
 
-  def putWaitingToBeds(hospital: Hospital): Unit
+  def putWaitingToBeds: Unit
 
   // last, most important
-  def writeStory(history: History): Unit
+  def writeStory: Unit
 }
