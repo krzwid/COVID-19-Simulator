@@ -1,10 +1,10 @@
 package Model.MapSites
 
-import Model.People.Person
+import Model.People.{Patient, Person, Staff}
 
 trait Room {
-  def goIn(person: Person): Unit
-  def canGoIn(person: Person): Boolean
-  def goOut(person: Person): Unit
+  def goIn(staff: Staff): Unit
+  def goOut(staff: Staff): Unit
+  def canGoIn(staff: Staff): Boolean
   def getPerson(ID: Int): Person
 }
