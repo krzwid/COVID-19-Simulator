@@ -42,7 +42,7 @@ class PatientRoom(
 
   def putPatient(patient: Patient): Unit = {
     patients += patient
-    println("patient put: " = patient.getID)
+    println("patient put: " + patient.getID)
   }
 
   def removePatient(ID: Int): Unit = {
