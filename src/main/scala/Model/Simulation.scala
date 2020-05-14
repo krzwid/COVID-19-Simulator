@@ -25,8 +25,6 @@ class Simulation(var config: Config,
       return null
     }
 
-
-
     // HERE USE YOUR FUCKING ENGINE TO DO STUFF
 
 
