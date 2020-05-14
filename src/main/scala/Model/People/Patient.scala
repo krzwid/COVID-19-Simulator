@@ -11,6 +11,10 @@ class Patient(
              private var otherDiseaseSince: Int,
              ) extends Person {
 
+  def this(id: Int) {
+    this(id, infected = true, daysSinceInfected = 0, covidSymptoms = true, otherDisease = false, otherDiseaseSince = 0)
+  }
+
   private var daysSinceTreated: scala.collection.mutable.Map[Class[_], Int] = scala.collection.mutable.Map(
     classOf[Doctor] -> 0,
     classOf[Nurse] -> 0

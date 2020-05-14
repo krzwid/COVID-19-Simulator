@@ -1,5 +1,8 @@
 package Model.Engine
 
+import Model.MapSites.Hospital
+import Model.Statistics.History
+
 trait Engine {
 
 
@@ -12,17 +15,19 @@ trait Engine {
 
   def nextStep: Unit
 
-  def addNewPatients: Unit
+  def addNewPatients(hospital: Hospital): Unit
 
   // decide if and where to send staff
-  def manageStaff: Unit
+  def manageStaff(hospital: Hospital): Unit
 
   def removePatient: Unit
 
-  def sendNewStaff: Unit
+  def sendNewStaff(hospital: Hospital): Unit
 
-  def sendInfectedStaffToBed: Unit
+  def sendInfectedStaffToQueue(hospital: Hospital): Unit
+
+  def putWaitingToBeds(hospital: Hospital): Unit
 
   // last, most important
-  def writeStory: Unit
+  def writeStory(history: History): Unit
 }
