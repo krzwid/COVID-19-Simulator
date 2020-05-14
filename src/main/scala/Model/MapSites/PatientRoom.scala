@@ -21,28 +21,28 @@ class PatientRoom(
     for( (key, _) <- daysSinceVisitedBy) {
       daysSinceVisitedBy(key) = 0
     }
-    println("person comes in: " + person.getID())
+    println("person comes in: " + person.getID)
   }
 
   def canGoIn(person: Person): Boolean = {
-    freeBeds > 0
+    this.freeBeds > 0
   }
 
   def goOut(person: Person): Unit = {
-    println("person goes out: " + person.getID())
+    println("person goes out: " + person.getID)
   }
 
   def getPerson(ID: Int): Person = {
-    patients.find(_.getID.equals(ID))
+    patients.find(_.getID.equals(ID)).head
   }
 
   def freeBeds: Int = {
-    capacity - patients.size
+    this.capacity - this.patients.size
   }
 
   def putPatient(patient: Patient): Unit = {
     patients += patient
-    println("patient put: " = patient.getID())
+    println("patient put: " = patient.getID)
   }
 
   def removePatient(ID: Int): Unit = {

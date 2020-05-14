@@ -5,10 +5,10 @@ import Model.People.{Patient, Person, Staff}
 import scala.collection.mutable.ListBuffer
 
 class StaffRoom extends Room {
-  private val staffs = ListBuffer[Staff]()
+  private val staffs = ListBuffer[Person]()
 
-  def goIn(staff: Staff): Unit = {
-    staffs += staff
+  def goIn(person: Person): Unit = {
+    staffs +=  person
   }
 
   def canGoIn(person: Person): Boolean = {
