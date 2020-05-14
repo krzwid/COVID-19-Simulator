@@ -14,6 +14,7 @@ class BasicConfig(var configPath: String) extends Config {
 
   private def readData(): Unit = {
     //reading data from file
+    if (this.configPath == null) return
     val builder = new StringBuilder()
     val source = scala.io.Source.fromFile(this.configPath)
     val lines = try source.mkString finally source.close()
@@ -27,4 +28,5 @@ class BasicConfig(var configPath: String) extends Config {
   override def getData: String = {
     this.dataString
   }
+
 }
