@@ -5,21 +5,25 @@ import Model.People.{Patient, Person, Staff}
 import scala.collection.mutable.ListBuffer
 
 class StaffRoom extends Room {
-  private val staffs = ListBuffer[Staff]()
+  private val staffList = ListBuffer[Staff]()
 
-  def goIn(staff: Staff): Unit = {
-    staffs.addOne(staff)
+  override def goIn(staff: Staff): Unit = {
+    staffList.addOne(staff)
   }
 
-  def canGoIn(staff: Staff): Boolean = {
+  override def canGoIn(staff: Staff): Boolean = {
     true //capacity of StaffRoom is inf
   }
 
-  def goOut(staff: Staff): Unit = {
-    staffs.filter(_.getID != staff.getID)
+  override def goOut(staff: Staff): Unit = {
+    staffList.subtractOne(staff)
   }
 
-  def getPerson(ID: Int): Person = {
-    staffs.find(_.getID.equals(ID)).head
+  override def getPerson(ID: Int): Person = {
+    staffList.find(_.getID.equals(ID)).head
+  }
+
+  def getStaffList: ListBuffer[Staff] = {
+    staffList
   }
 }

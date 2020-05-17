@@ -5,8 +5,8 @@ import Model.People.{Patient, Person, Staff}
 import scala.collection.mutable.ListBuffer
 
 class PatientRoom(private val capacity: Int) extends Room {
-  private var patients = ListBuffer[Patient]()
-  private var staff = ListBuffer[Staff]()
+  private var patientsList = ListBuffer[Patient]()
+  private val staffList = ListBuffer[Staff]()
 
   // map from Class.getName to Int
   private val daysSinceVisitedBy: scala.collection.mutable.Map[String, Int] = scala.collection.mutable.Map[String, Int]()
@@ -17,35 +17,37 @@ class PatientRoom(private val capacity: Int) extends Room {
 
 //  implemented interface
   override def goIn(staff: Staff): Unit = {
-    this.staff.addOne(staff)
-    for( (key, _) <- daysSinceVisitedBy) {
+    staffList.addOne(staff)
+    for( (key, _ ) <- daysSinceVisitedBy) {
       daysSinceVisitedBy(key) = 0
     }
   }
 
   override def canGoIn(staff: Staff): Boolean = {
-    this.staff.isEmpty
+    staffList.isEmpty
   }
 
   override def goOut(staff: Staff): Unit = {
-    this.staff.filter( _ != staff)
+    staffList.subtractOne(staff)
   }
 
   override def getPerson(ID: Int): Person = {
-    patients.find(_.getID.equals(ID)).head
+    patientsList.find(_.getID.equals(ID)).head
   }
 
 //  additional methods to take care of patients
   def freeBeds: Int = {
-    this.capacity - this.patients.size
+    this.capacity - patientsList.size
   }
 
   def putPatient(patient: Patient): Unit = {
-    patients.addOne(patient)
+    if(this.canPutPatient) {
+      patientsList.addOne(patient)
+    }
   }
 
   def removePatient(ID: Int): Unit = {
-    patients = patients.filter(_.getID != ID)
+    patientsList = patientsList.filter(_.getID != ID)
   }
 
   def canPutPatient: Boolean = {
