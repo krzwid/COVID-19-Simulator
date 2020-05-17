@@ -13,7 +13,15 @@ class BasicEngine(
   private var hour: Int = 0
   private var minute: Int = 0
 
-  private var dailyData: DailyData = null
+  private var dailyData: DailyData = _
+
+  def getHour: Int = {
+    this.hour
+  }
+
+  def getMinute: Int = {
+    this.minute
+  }
 
   override def startNewDay: Unit = {
     val startHour = 8
@@ -31,12 +39,16 @@ class BasicEngine(
     val step = 30 // in minutes
     this.hour += (this.minute + step) / 60
     this.minute = (this.minute + step) % 60
+    if(this.getHour == 18 && this.getMinute == 0){
+      this.startNewDay
+    }
   }
 
   override def addNewPatients: Unit = {
     val howMany = 10
-    for (i <- (1 to howMany).toList) {
-      hospital.addPatientToQueue(new Patient(1, false, 0, false, false, 0))
+    for (_ <- (1 to howMany).toList) {
+      val patient = new Patient(1, false, 0, false, false, 0)
+      hospital.addPatientToQueue(patient)
     }
   }
 
@@ -48,8 +60,9 @@ class BasicEngine(
 
   override def sendNewStaff: Unit = {
     val howMany = 0
-    for (i <- (0 until howMany).toList) {
-      hospital.addStaff(new Doctor(1, false, 0, false))
+    val doctor = new Doctor(1, false, 0, false)
+    for (_ <- (0 until howMany).toList) {
+      hospital.addStaff(doctor)
     }
   }
 

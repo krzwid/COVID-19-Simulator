@@ -40,5 +40,5 @@ class DailyData {
   private var countPatient: Int = 0
   private var countStaff: Int = 0
 
-  private val mortality: Double = countDeadCovid / (countPatient)
+  private var mortality: Double = 0
 }
