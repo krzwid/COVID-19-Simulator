@@ -12,7 +12,7 @@ class BasicConfig() extends Config {
 //  private var staffSrc: String = null
 //  var staffLines: List[Array[String]] = null
 
-  val parameters: mutable.Map[String, Int] = new mutable.HashMap[String, Int]()
+  private var parameters: Map[String, Int] = null
 
   def this(parametersSrc: String, patientsSrc: String) = {
     this()
@@ -23,10 +23,12 @@ class BasicConfig() extends Config {
     this.readData()
 
     // parse parameters to Int's
+    val mapBuilder = new mutable.HashMap[String, Int]()
     for (line <- parametersLines) {
       val split = line.split('=')
-      this.parameters.put(split(0), split(1).toInt)
+      mapBuilder.put(split(0), split(1).toInt)
     }
+    this.parameters = mapBuilder.toMap
   }
 
   private def readData(): Unit = {
@@ -42,9 +44,17 @@ class BasicConfig() extends Config {
 //    this.staffLines = staffLines.map(e => e.split(",")).filter(e => !e.contains(null))
   }
 
-  def printMap: Unit = {
+  def printMap(): Unit = {
     for ((key, value) <- this.parameters) {
       println(key + ": " + value.toString)
     }
+  }
+
+  override def getParameters: Map[String, Int] = {
+    this.parameters
+  }
+
+  override def getPatientsData: List[Array[String]] = {
+    this.patientsLines
   }
 }

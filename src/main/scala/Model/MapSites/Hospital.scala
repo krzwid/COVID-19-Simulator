@@ -1,32 +1,43 @@
 package Model.MapSites
 
-import Model.People.{Patient, Staff}
+import Model.People.{Doctor, Nurse, Patient, Staff}
 
 import scala.collection.mutable
+import scala.collection.mutable.ListBuffer
 
 class Hospital {
-  private val floors = List[Floor]()
-  private val newPatients = new mutable.Queue[Patient]()
-  private val staff = new mutable.ListBuffer[Staff]
+  var floors: List[Floor] = null
+  val queue = new mutable.Queue[Patient]()
+  val doctors = new mutable.ListBuffer[Doctor]
+  val nurses = new mutable.ListBuffer[Nurse]
+
+  def this(howManyFloors: Int, patientsDatabase: List[Patient], howMany: Int) = {
+    this()
+
+    val floorsBuilder = new ListBuffer[Floor]()
+    for (_ <- (0 until howManyFloors).toList) floorsBuilder.append(new Floor)
+    this.floors = floorsBuilder.toList
+
+    patientsDatabase.take(howMany).foreach(this.queue.enqueue)
+  }
 
   def freeBeds: Int ={
     floors.map(_.freeBeds).sum
   }
 
   def addPatientToQueue(patient: Patient): Unit = {
-    newPatients.append(patient)
+    queue.append(patient)
   }
 
   def getQueue: mutable.Queue[Patient] = {
-    this.newPatients
+    this.queue
   }
 
   def addStaff(staff: Staff): Unit = {
-    this.staff.addOne(staff)
+    staff match {
+      case doctor: Doctor => this.doctors.addOne(doctor)
+      case nurse: Nurse => this.nurses.addOne(nurse)
+      case _ =>
+    }
   }
-
-  def getStaff: mutable.ListBuffer[Staff] = {
-    this.staff
-  }
-
 }
