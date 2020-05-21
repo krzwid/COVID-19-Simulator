@@ -3,12 +3,17 @@ package Model
 import Model.Config.{BasicConfig, Config}
 import Model.Engine.{BasicEngine, Engine}
 import Model.MapSites.Hospital
+import Model.People.{Patient, Staff}
 import Model.Statistics.History
 
 class Simulation(var config: Config,
                  var hospital: Hospital,
                  var engine: Engine,
                  var history: History) {
+
+  private var PotentialPatientsDatabase: List[Patient] = null
+  private var maxPatientID = 0
+  private var maxStaffID = 0
 
   def this() {
     this(null, null, null, null)
@@ -32,9 +37,8 @@ class Simulation(var config: Config,
     this.history
   }
 
-  def configure(configPath: String): Unit = {
-    this.config = new BasicConfig(configPath)
-    this.config.load()
+  def configure(parametersSrc: String, patientsSrc: String): Unit = {
+    this.config = new BasicConfig(parametersSrc, patientsSrc)
 
     // here create Hospital, Engine, History -- depended on config
     this.hospital = new Hospital
@@ -43,7 +47,8 @@ class Simulation(var config: Config,
   }
 
   def getData: String = {
-    this.config.getData
+//    this.config.getData
+    null
   }
 
 }

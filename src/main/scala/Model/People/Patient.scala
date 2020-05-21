@@ -8,7 +8,7 @@ class Patient(
              private var daysSinceInfected: Int,
              private var covidSymptoms: Boolean,
              private var otherDisease: Boolean,
-             private var otherDiseaseSince: Int,
+             private var otherDiseaseSince: Int
              ) extends Person {
 
   def this(id: Int) {
