@@ -1,32 +1,50 @@
 package Model.Config
 
-class BasicConfig(var configPath: String) extends Config {
-  private var dataString: String = ""
+import scala.collection.mutable
 
-  def load(): Unit = {
-    this.readData()
-  }
+class BasicConfig() extends Config {
+  private var parametersSrc: String = null
+  var parametersLines: List[String] = null
 
-  def load(source: String): Unit = {
-    this.configPath = source
+  private var patientsSrc: String = null
+  var patientsLines: List[Array[String]] = null
+
+//  private var staffSrc: String = null
+//  var staffLines: List[Array[String]] = null
+
+  val parameters: mutable.Map[String, Int] = new mutable.HashMap[String, Int]()
+
+  def this(parametersSrc: String, patientsSrc: String) = {
+    this()
+    if (parametersSrc == null || patientsSrc == null) throw new Exception("Null parameters")
+    this.parametersSrc = parametersSrc
+    this.patientsSrc = patientsSrc
+//    this.staffSrc = staffSrc
     this.readData()
+
+    // parse parameters to Int's
+    for (line <- parametersLines) {
+      val split = line.split('=')
+      this.parameters.put(split(0), split(1).toInt)
+    }
   }
 
   private def readData(): Unit = {
-    //reading data from file
-    if (this.configPath == null) return
-    val builder = new StringBuilder()
-    val source = scala.io.Source.fromFile(this.configPath)
-    val lines = try source.mkString finally source.close()
-    lines.foreach(e => {
-      builder.append(e)
-    })
-    this.dataString = builder.toString()
-    println("Successful reading!\n")
+    val sourceParams = scala.io.Source.fromFile(this.parametersSrc)
+    this.parametersLines = try sourceParams.getLines().toList finally sourceParams.close()
+
+    val sourcePatients = scala.io.Source.fromFile(this.patientsSrc)
+    val patientsLines = try sourcePatients.getLines().toList finally sourcePatients.close()
+    this.patientsLines = patientsLines.map(e => e.split(','))
+
+//    val sourceStaff = scala.io.Source.fromFile(this.staffSrc)
+//    val staffLines = try sourceStaff.getLines().toList finally sourceStaff.close()
+//    this.staffLines = staffLines.map(e => e.split(",")).filter(e => !e.contains(null))
   }
 
-  override def getData: String = {
-    this.dataString
+  def printMap: Unit = {
+    for ((key, value) <- this.parameters) {
+      println(key + ": " + value.toString)
+    }
   }
-
 }
