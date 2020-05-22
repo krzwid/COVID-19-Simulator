@@ -24,6 +24,14 @@ trait Engine {
 
   def putWaitingToBeds: Unit
 
+  def spreadInfection: Int
+
+  def killThoseBastards: Int
+
+  def revealCovidSymptoms: Int
+
+  def curePatients: Int
+
   // last, most important
-  def writeStory: Unit
+  def writeHistory: Unit
 }

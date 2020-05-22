@@ -34,7 +34,6 @@ class Simulation(var config: Config,
   }
 
   def simulate: History = {
-//    if (config == null) throw new NullPointerException("Empty config -- it's unacceptable")
     Objects.requireNonNull(config, "Empty configuration")
 
     // HERE USE YOUR FUCKING ENGINE TO DO STUFF
@@ -42,13 +41,41 @@ class Simulation(var config: Config,
 
     for (_ <- (1 to this.config.getP("DurationInDays"))) {
       engine.startNewDay
+
+      // porozsylaj pacjentow z kolejki do lozek
+      // -- mozliwe kilka wersji
+      engine.putWaitingToBeds
+
       while (!engine.isNewDay) {
-        engine.nextStep
         println(engine.getHour + ":" + engine.getMinute)
+        // wyslij personel do odpowiednich pomieszczen
+        // -- mozliwe kilka wersji
+        engine.manageStaff
+
+        // okresl kto sie zaraza
+        // -- mozliwe kilka wersji
+        val countNewInfections = engine.spreadInfection
+
+        engine.nextStep
       }
       day = day + 1
       println("Dzień numer: " + this.day)
 
+      // okresl kto umarl           - do kostnicy
+      // -- mozliwe kilka wersji
+      val countNewDeaths = engine.killThoseBastards
+
+      // okresl kto dostal objawow  - (jesli personel, to do kolejki dla chorych)
+      // -- mozliwe kilka wersji
+      val countNewDiagnosed = engine.revealCovidSymptoms
+
+      // okresl kto wyzdrowial      - wyrzuc ze szpitala (ewentualnie przywroc personel)
+      // -- mozliwe kilka wersji
+      val countCured = engine.curePatients
+
+      // zapisz historie
+      // -- jedna jedyna i niezmienna
+      engine.writeHistory
     }
 
     // return history of disease

@@ -4,7 +4,7 @@ import Model.Config.Config
 import Model.Engine.BasicEngine
 import Model.MapSites.Hospital
 import Model.Statistics.History
-//import org.scalatest.FunSuite
+import org.scalatest.FunSuite
 
 //class BasicEngineTest extends FunSuite {
 //  val config: Config = new Config {
