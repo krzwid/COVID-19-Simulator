@@ -85,8 +85,16 @@ class BasicEngine(
     }
   }
 
-  override def writeStory: Unit = {
+  override def spreadInfection: Int = ???
+
+  override def killThoseBastards: Int = ???
+
+  override def curePatients: Int = ???
+  
+  override def writeHistory: Unit = {
     history.addDay(this.dailyData)
     this.dailyData = null
   }
+
+  override def revealCovidSymptoms: Int = ???
 }

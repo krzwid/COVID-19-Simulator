@@ -2,3 +2,4 @@ startingPatientsCount=100
 startingDoctorsCount=7
 startingNursesCount=20
 numberOfFloors=5
+DurationInDays=10

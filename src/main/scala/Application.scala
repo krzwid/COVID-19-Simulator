@@ -5,8 +5,6 @@ import Model.Simulation
 object Application {
   def main(args: Array[String]): Unit = {
     try {
-      println(new Class.forName(classOf[Doctor])(1))
-
       val rscPath = "src\\main\\resources\\"
       val config = new BasicConfig(rscPath + "parameters.txt", rscPath + "patients.txt")
       config.getF("f1")(2)
@@ -20,6 +18,5 @@ object Application {
     } finally {
       println("Shutdown - I hope you enjoyed the results!")
     }
-
   }
 }
