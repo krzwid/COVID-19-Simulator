@@ -89,14 +89,11 @@ class BasicEngine(
     }
   }
 
-  override def putWaitingToBeds: Unit = {
-    while (hospital.getQueue.nonEmpty) {
-      val p = hospital.getQueue.dequeue
-      if (hospital.freeBeds > 0) {
-        println("tu znajdz pacjentowi lozko")
-      } else {
-        println("niestety, zabraklo miejsca")
-      }
+  override def putWaitingToBeds(patient: Patient): Unit = {
+      val potentialRoom = hospital.floors.flatMap(_.getPatientRooms).find(_.canPutPatient)
+      potentialRoom match {
+        case Some(room) => room.putPatient(patient)
+        case None => println("niestety, zabraklo miejsca")
     }
   }
 

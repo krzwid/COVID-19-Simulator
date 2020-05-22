@@ -4,7 +4,7 @@ import java.util.Objects
 
 import Model.Config.{BasicConfig, Config}
 import Model.Engine.{BasicEngine, Engine}
-import Model.MapSites.Hospital
+import Model.MapSites.{Hospital, PatientRoom, StaffRoom}
 import Model.People.{Doctor, Nurse, Patient, Staff}
 import Model.Statistics.History
 
@@ -44,7 +44,11 @@ class Simulation(var config: Config,
 
       // porozsylaj pacjentow z kolejki do lozek
       // -- mozliwe kilka wersji
-      engine.putWaitingToBeds
+
+      for(_ <- (1 to 100)) {
+        engine.putWaitingToBeds(this.getNewPatient)
+      }
+
 
       var countNewInfections: Int = 0
       while (!engine.isNewDay) {
@@ -56,7 +60,7 @@ class Simulation(var config: Config,
         // okresl kto sie zaraza
         // -- mozliwe kilka wersji
         countNewInfections += engine.spreadInfection
-
+        println("Nowe infekcje:" + countNewInfections)
         //powrot staffu do kanciapy
         engine.getBackToStaffRoom
         engine.nextStep
@@ -64,9 +68,11 @@ class Simulation(var config: Config,
       day = day + 1
       println("Dzień numer: " + this.day)
 
+
       // okresl kto umarl           - do kostnicy
       // -- mozliwe kilka wersji
       val countNewDeaths = engine.killThoseBastards
+      println("Zginelo:" + countNewDeaths)
 
       // okresl kto dostal objawow  - (jesli personel, to do kolejki dla chorych)
       // -- mozliwe kilka wersji
@@ -92,6 +98,12 @@ class Simulation(var config: Config,
     this.config.getPatientsData.filter(_.length == 6).foreach(this.PotentialPatientsDatabase.enqueue)
 
     this.hospital = new Hospital(this.config.getParameters.getOrElse("numberOfFloors", 0))
+    this.hospital.floors.foreach(floor => {
+      for ( _ <- (1 to 5)) {
+        floor.addPatientRoom(new PatientRoom(6))
+      }
+      floor.addStaffRoom(new StaffRoom)
+    })
     this.engine = new BasicEngine(this.config, this.hospital, this.history)
   }
 
@@ -104,12 +116,16 @@ class Simulation(var config: Config,
     for (_ <- (0 to this.config.getP("startingPatientsCount")).toList)
       this.hospital.addPatientToQueue(getNewPatient)
 
-    for (_ <- (0 until this.config.getP("startingDoctorsCount")).toList) {
-      this.hospital.doctors.append(new Doctor(maxStaffID))
+    for (i <- (0 until this.config.getP("startingDoctorsCount")).toList) {
+      val doctor = new Doctor(maxStaffID)
+      this.hospital.doctors.append(doctor)
       this.maxStaffID += 1
+      this.hospital.floors(i%5).addStaffToStaffRoom(doctor)
     }
-    for (_ <- (0 until this.config.getP("startingNursesCount")).toList) {
-      this.hospital.nurses.append(new Nurse(maxStaffID))
+    for (i <- (0 until this.config.getP("startingNursesCount")).toList) {
+      val nurse = new Nurse(maxStaffID)
+      this.hospital.nurses.append(nurse)
+      this.hospital.floors(i%5).addStaffToStaffRoom(nurse)
       this.maxStaffID += 1
     }
   }

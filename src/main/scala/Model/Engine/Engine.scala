@@ -1,6 +1,7 @@
 package Model.Engine
 
 import Model.MapSites.Hospital
+import Model.People.Patient
 import Model.Statistics.History
 
 trait Engine {
@@ -22,7 +23,7 @@ trait Engine {
 
   def sendInfectedStaffToQueue: Unit
 
-  def putWaitingToBeds: Unit
+  def putWaitingToBeds(patient: Patient): Unit
 
   def spreadInfection: Int
 

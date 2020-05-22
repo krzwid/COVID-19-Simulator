@@ -48,10 +48,12 @@ class PatientRoom(private val capacity: Int) extends Room {
     this.capacity - patientsList.size
   }
 
-  def putPatient(patient: Patient): Unit = {
+  def putPatient(patient: Patient): Boolean = {
     if(this.canPutPatient) {
       patientsList.addOne(patient)
+      return true
     }
+    false
   }
 
   def removePatient(ID: Int): Unit = {
