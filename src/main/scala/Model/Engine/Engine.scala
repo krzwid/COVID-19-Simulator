@@ -16,7 +16,7 @@ trait Engine {
   // decide if and where to send staff
   def manageStaff: Unit
 
-  def removePatient: Unit
+  def getBackToStaffRoom: Unit
 
   def sendNewStaff: Unit
 

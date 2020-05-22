@@ -40,8 +40,12 @@ class Patient(
     this.daysSinceInfected
   }
 
-  def showsCovidSymptoms: Boolean = {
-    this.covidSymptoms
+  def showsCovidSymptoms(dayToShowSymptoms: Int): Boolean = {
+    if(this.daysSinceInfected >= dayToShowSymptoms) {
+      this.covidSymptoms = true
+      return true
+    }
+    false
   }
 
   def getRoom: Room = {
@@ -55,12 +59,21 @@ class Patient(
 
   // new functions
 
-  def ifDies(par: Int): Boolean = {
+  def isDead(par: Int): Boolean = {
     val p = par.toDouble / 100
     this.infected && scala.util.Random.nextDouble() < p
   }
 
-  def ifRecover(limit : Int): Boolean = {
+  def isRecovered(limit : Int): Boolean = {
     this.infectedSince > limit
+  }
+
+  def isInfected(par : Int): Boolean = {
+    val p = par.toDouble / 100
+    if(this.infected && scala.util.Random.nextDouble() < p){
+      this.infected = true
+      return true
+    }
+    false
   }
 }

@@ -50,10 +50,25 @@ class BasicEngine(
   }
 
   override def manageStaff: Unit = {
-    // do something
+    hospital.floors.foreach(floor => {
+      floor.getStaffRooms.head.getStaffList.foreach(staff => {
+        val random = scala.util.Random.nextInt(5)
+        floor.getPatientRooms(random).goIn(staff)
+      })
+
+    })
   }
 
-  override def removePatient: Unit = ???
+  override def getBackToStaffRoom: Unit = {
+    hospital.floors.foreach(floor => {
+      floor.getPatientRooms.foreach(patientRoom => {
+        patientRoom.getStaffList.foreach(staff =>{
+          patientRoom.goOut(staff)
+          floor.getStaffRooms.head.goIn(staff)
+        })
+      })
+    })
+  }
 
   override def sendNewStaff: Unit = {
     val howMany = 0
@@ -85,16 +100,63 @@ class BasicEngine(
     }
   }
 
-  override def spreadInfection: Int = ???
+  override def spreadInfection: Int = {
+    var countNewInfections:Int = 0
+    hospital.floors.foreach(floor => {
+      floor.getPatientRooms.foreach(patientRoom => {
+        patientRoom.getPatientList.foreach(patient =>{
+          patient.isRecovered(config.getP("probOfInfection"))
+          countNewInfections +=1
+        })
+      })
+    })
+    countNewInfections
+  }
 
-  override def killThoseBastards: Int = ???
+  override def killThoseBastards: Int = {
+    var countDead:Int = 0
+    hospital.floors.foreach(floor => {
+      floor.getPatientRooms.foreach(patientRoom => {
+        patientRoom.getPatientList.foreach(patient =>{
+          patient.isDead(config.getP("probOfDeath"))
+          countDead +=1
+          patientRoom.removePatient(patient.getID)
+        })
+      })
+    })
+    countDead
+  }
 
-  override def curePatients: Int = ???
+  override def curePatients: Int = {
+    var countRecovered:Int = 0
+    hospital.floors.foreach(floor => {
+      floor.getPatientRooms.foreach(patientRoom => {
+        patientRoom.getPatientList.foreach(patient =>{
+          patient.isRecovered(config.getP("dayOnWhichRecovered"))
+          countRecovered +=1
+          patientRoom.removePatient(patient.getID)
+        })
+      })
+    })
+    countRecovered
+  }
   
   override def writeHistory: Unit = {
     history.addDay(this.dailyData)
     this.dailyData = null
   }
 
-  override def revealCovidSymptoms: Int = ???
+  override def revealCovidSymptoms: Int = {
+    var countCovidSymptoms:Int = 0
+    hospital.floors.foreach(floor => {
+      floor.getPatientRooms.foreach(patientRoom => {
+        patientRoom.getPatientList.foreach(patient =>{
+          patient.showsCovidSymptoms(config.getP("dayToShowSymptoms"))
+          countCovidSymptoms +=1
+          patientRoom.removePatient(patient.getID)
+        })
+      })
+    })
+    countCovidSymptoms
+  }
 }

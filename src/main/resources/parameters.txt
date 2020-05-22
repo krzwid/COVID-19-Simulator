@@ -3,3 +3,7 @@ startingDoctorsCount=7
 startingNursesCount=20
 numberOfFloors=5
 DurationInDays=10
+probOfDeath=1
+dayOnWhichRecovered=14
+probOfInfection=1
+dayToShowSymptoms=5

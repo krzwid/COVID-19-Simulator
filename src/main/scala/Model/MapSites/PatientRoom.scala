@@ -24,10 +24,9 @@ class PatientRoom(private val capacity: Int) extends Room {
   }
 
   override def canGoIn(staff: Staff): Boolean = {
-    if (staff.getClass == Class[Doctor]) {
-      return !staffList.exists(_.getClass == Class[Doctor])
-    }
-    true
+    if (staff.isInstanceOf[Doctor]) {
+      !staffList.exists(_.isInstanceOf[Doctor])
+    } else true
   }
 
   override def goOut(staff: Staff): Unit = {
@@ -39,6 +38,12 @@ class PatientRoom(private val capacity: Int) extends Room {
   }
 
 //  additional methods to take care of patients
+  def getPatientList: ListBuffer[Patient] = {
+    this.patientsList
+  }
+  def getStaffList: ListBuffer[Staff] = {
+    this.staffList
+  }
   def freeBeds: Int = {
     this.capacity - patientsList.size
   }

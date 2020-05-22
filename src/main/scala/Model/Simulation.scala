@@ -46,6 +46,7 @@ class Simulation(var config: Config,
       // -- mozliwe kilka wersji
       engine.putWaitingToBeds
 
+      var countNewInfections: Int = 0
       while (!engine.isNewDay) {
         println(engine.getHour + ":" + engine.getMinute)
         // wyslij personel do odpowiednich pomieszczen
@@ -54,8 +55,10 @@ class Simulation(var config: Config,
 
         // okresl kto sie zaraza
         // -- mozliwe kilka wersji
-        val countNewInfections = engine.spreadInfection
+        countNewInfections += engine.spreadInfection
 
+        //powrot staffu do kanciapy
+        engine.getBackToStaffRoom
         engine.nextStep
       }
       day = day + 1

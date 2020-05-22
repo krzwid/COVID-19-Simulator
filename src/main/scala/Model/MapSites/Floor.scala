@@ -17,6 +17,10 @@ class Floor {
   def addPatientRoom(patientRoom: PatientRoom): Unit = {
     patientRooms.addOne(patientRoom)
   }
+
+  def getStaffRooms: ListBuffer[StaffRoom] = {
+    this.staffRooms
+  }
 }
 
 
