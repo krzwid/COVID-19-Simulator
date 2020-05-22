@@ -67,10 +67,12 @@ class BasicEngine(
   }
 
   override def sendInfectedStaffToQueue: Unit = {
-    val getInfected = hospital.getStaff.filter(_.showsCovidSymptoms).toList
-    hospital.getStaff --= getInfected
+    val infectedDoctors = hospital.doctors.filter(_.showsCovidSymptoms)
+    hospital.doctors --= infectedDoctors
+    val infectedNurses = hospital.nurses.filter(_.showsCovidSymptoms)
+    hospital.nurses --= infectedNurses
 
-    for (s <- getInfected) {
+    for (s <- (infectedDoctors ++ infectedNurses)) {
       hospital.addPatientToQueue(s.transformToPatient)
     }
   }
