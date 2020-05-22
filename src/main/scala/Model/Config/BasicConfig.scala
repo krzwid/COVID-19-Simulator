@@ -1,5 +1,6 @@
 package Model.Config
 
+import scala.collection.immutable.HashMap
 import scala.collection.mutable
 
 class BasicConfig extends Config {
@@ -10,6 +11,11 @@ class BasicConfig extends Config {
   var patientsLines: List[Array[String]] = _
 
   private var parameters: Map[String, Int] = _
+
+//  private var functions: Map[String, (_) => (_)] = new HashMap[String, (_) => (_)](
+//    "f1" -> ((a: Int): => a * a),
+//
+//  )
 
   def this(parametersSrc: String, patientsSrc: String) = {
     this()
@@ -55,5 +61,9 @@ class BasicConfig extends Config {
   override def getP(key: String): Int = {
     if (this.parameters.keySet.contains(key)) this.parameters(key)
     else throw new Exception("There is no such parameter: \"" + key + "\"")
+  }
+
+  override def getF(key: String): Int => Int = {
+    (a: Int) => a
   }
 }
