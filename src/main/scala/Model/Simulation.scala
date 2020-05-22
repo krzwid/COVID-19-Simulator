@@ -20,9 +20,10 @@ class Simulation(var config: Config,
 
   private var maxPatientID = 0
   private var maxStaffID = 0
+  var day:Int  = 0
 
   def this() {
-    this(null, null)
+    this(null:Config, null:Engine)
   }
 
   def this(parametersSrc: String, patientsSrc: String) {
@@ -36,6 +37,16 @@ class Simulation(var config: Config,
     // HERE USE YOUR FUCKING ENGINE TO DO STUFF
     this.fillHospital()
 
+    for (_ <- (1 to 10)) {
+      engine.startNewDay
+      while (!engine.isNewDay) {
+        engine.nextStep
+        println(engine.getHour + ":" + engine.getMinute)
+      }
+      day = day + 1
+      println("Dzień numer: " + this.day)
+
+    }
 
     // return history of disease
     this.history
@@ -47,7 +58,7 @@ class Simulation(var config: Config,
     // parse patients database
     this.config.getPatientsData.filter(_.length == 6).foreach(this.PotentialPatientsDatabase.enqueue)
 
-    this.hospital = new Hospital(this.config.getParameters("numberOfFloors"))
+    this.hospital = new Hospital(this.config.getParameters.getOrElse("numberOfFloors", 0))
     this.engine = new BasicEngine(this.config, this.hospital, this.history)
   }
 

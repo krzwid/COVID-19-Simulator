@@ -1,4 +1,4 @@
-p=3
-w=40
-n=1000
-s=40
+startingPatientsCount=100
+startingDoctorsCount=7
+startingNursesCount=20
+numberOfFloors=5
