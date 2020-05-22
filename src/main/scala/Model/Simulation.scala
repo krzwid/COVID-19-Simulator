@@ -1,5 +1,7 @@
 package Model
 
+import java.util.Objects
+
 import Model.Config.{BasicConfig, Config}
 import Model.Engine.{BasicEngine, Engine}
 import Model.MapSites.Hospital
@@ -32,7 +34,8 @@ class Simulation(var config: Config,
   }
 
   def simulate: History = {
-    if (config == null) throw new Exception("Empty config -- it's unacceptable")
+//    if (config == null) throw new NullPointerException("Empty config -- it's unacceptable")
+    Objects.requireNonNull(config, "Empty configuration")
 
     // HERE USE YOUR FUCKING ENGINE TO DO STUFF
     this.fillHospital()
@@ -64,7 +67,7 @@ class Simulation(var config: Config,
 
   private def getNewPatient: Patient = {
     if (this.PotentialPatientsDatabase.nonEmpty) new Patient(this.PotentialPatientsDatabase.dequeue())
-    else throw new Exception("Set of random patients has been exhausted")
+    else throw new IndexOutOfBoundsException("Set of random patients has been exhausted")
   }
 
   private def fillHospital(): Unit = {

@@ -27,7 +27,8 @@ class Hospital(howManyFloors: Int) {
     staff match {
       case doctor: Doctor => this.doctors.addOne(doctor)
       case nurse: Nurse => this.nurses.addOne(nurse)
-      case _ =>
+      case null => throw new NullPointerException("Adding null reference to staff collections")
+      case _ => throw new IllegalStateException("Illegal staff-object type ")
     }
   }
 }
