@@ -1,6 +1,6 @@
 package Model.MapSites
 
-import Model.People.{Patient, Person, Staff}
+import Model.People.{Patient, Person, Staff, Doctor}
 
 import scala.collection.mutable.ListBuffer
 
@@ -24,7 +24,10 @@ class PatientRoom(private val capacity: Int) extends Room {
   }
 
   override def canGoIn(staff: Staff): Boolean = {
-    staffList.isEmpty
+    if (staff.getClass == Class[Doctor]) {
+      return !staffList.exists(_.getClass == Class[Doctor])
+    }
+    true
   }
 
   override def goOut(staff: Staff): Unit = {
