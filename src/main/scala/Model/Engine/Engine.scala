@@ -5,14 +5,10 @@ import Model.Statistics.History
 
 trait Engine {
 
-
-
-
-
+  def getHour: Int
+  def getMinute: Int
   def startNewDay: Unit
-
   def isNewDay: Boolean
-
   def nextStep: Unit
 
   def addNewPatients: Unit
