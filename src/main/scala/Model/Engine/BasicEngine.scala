@@ -71,7 +71,6 @@ class BasicEngine(
 
     for (s <- (infectedDoctors ++ infectedNurses)) {
       hospital.addPatientToQueue(s.transformToPatient)
-
     }
   }
 

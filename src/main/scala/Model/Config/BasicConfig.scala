@@ -19,7 +19,7 @@ class BasicConfig extends Config {
 
   def this(parametersSrc: String, patientsSrc: String) = {
     this()
-    if (parametersSrc == null || patientsSrc == null) throw new Exception("Null sources paths")
+    if (parametersSrc == null || patientsSrc == null) throw new NullPointerException("Null sources paths")
     this.parametersSrc = parametersSrc
     this.patientsSrc = patientsSrc
     this.readData()
@@ -28,8 +28,8 @@ class BasicConfig extends Config {
     val mapBuilder = new mutable.HashMap[String, Int]()
     for (line <- parametersLines) {
       val split = line.split('=')
-      if (split(0).equals("") || split(1).equals("")) throw new Exception("Invalid file")
-      if (!(split(1) forall Character.isDigit)) throw new Exception("Non-numerical parameter")
+      if (split(0).equals("") || split(1).equals("")) throw new IllegalArgumentException("Invalid file")
+      if (!(split(1) forall Character.isDigit)) throw new IllegalArgumentException("Non-numerical parameter")
       mapBuilder.put(split(0), split(1).toInt)
     }
     this.parameters = mapBuilder.toMap
@@ -60,7 +60,7 @@ class BasicConfig extends Config {
 
   override def getP(key: String): Int = {
     if (this.parameters.keySet.contains(key)) this.parameters(key)
-    else throw new Exception("There is no such parameter: \"" + key + "\"")
+    else throw new NoSuchElementException("There is no such parameter: \"" + key + "\"")
   }
 
   override def getF(key: String): Int => Int = {
