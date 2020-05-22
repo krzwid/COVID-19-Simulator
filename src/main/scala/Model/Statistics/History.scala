@@ -10,4 +10,8 @@ class History {
   def getHistory: List[DailyData] = {
     this.days.toList
   }
+
+  def printGraphs(): Unit = {
+    println("Here will be a lot of statistics")
+  }
 }

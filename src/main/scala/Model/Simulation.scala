@@ -6,17 +6,23 @@ import Model.MapSites.Hospital
 import Model.People.{Doctor, Nurse, Patient, Staff}
 import Model.Statistics.History
 
-class Simulation(var config: Config,
-                 var hospital: Hospital,
-                 var engine: Engine,
-                 var history: History) {
+import scala.collection.mutable
 
-  private var PotentialPatientsDatabase: List[Patient] = null
+class Simulation(var config: Config,
+                 var engine: Engine
+                 ) {
+
+  // database with data of future patients stored as Strings
+  private val PotentialPatientsDatabase: mutable.Queue[Array[String]] = new mutable.Queue[Array[String]]()
+
+  private val history: History = new History
+  private var hospital: Hospital = _
+
   private var maxPatientID = 0
   private var maxStaffID = 0
 
   def this() {
-    this(null, null, null, null)
+    this(null, null)
   }
 
   def this(parametersSrc: String, patientsSrc: String) {
@@ -28,7 +34,8 @@ class Simulation(var config: Config,
     if (config == null) throw new Exception("Empty config -- it's unacceptable")
 
     // HERE USE YOUR FUCKING ENGINE TO DO STUFF
-    
+    this.fillHospital()
+
 
     // return history of disease
     this.history
@@ -36,24 +43,30 @@ class Simulation(var config: Config,
 
   def configure(parametersSrc: String, patientsSrc: String): Unit = {
     this.config = new BasicConfig(parametersSrc, patientsSrc)
+
     // parse patients database
-    this.PotentialPatientsDatabase = this.config.getPatientsData.filter(a => a.length == 6).map(a => new Patient(
-      a(0).toInt, a(1).toBoolean, a(2).toInt, a(3).toBoolean, a(4).toBoolean, a(5).toInt
-    ))
+    this.config.getPatientsData.filter(_.length == 6).foreach(this.PotentialPatientsDatabase.enqueue)
 
-    // here create Hospital, Engine, History -- depended on config
-    this.hospital = new Hospital(10, this.PotentialPatientsDatabase, 100)
-    for (_ <- (0 until 50).toList) {
-      this.hospital.doctors.append(new Doctor(maxStaffID, false, 0, false))
-      this.maxStaffID += 1
-    }
-    for (_ <- (0 until 100).toList) {
-      this.hospital.nurses.append(new Nurse(maxStaffID, false, 0, false))
-      this.maxStaffID += 1
-    }
-
-    this.history = new History
+    this.hospital = new Hospital(this.config.getParameters("numberOfFloors"))
     this.engine = new BasicEngine(this.config, this.hospital, this.history)
   }
 
+  private def getNewPatient: Patient = {
+    if (this.PotentialPatientsDatabase.nonEmpty) new Patient(this.PotentialPatientsDatabase.dequeue())
+    else throw new Exception("Set of random patients has been exhausted")
+  }
+
+  private def fillHospital(): Unit = {
+    for (_ <- (0 to this.config.getP("startingPatientsCount")).toList)
+      this.hospital.addPatientToQueue(getNewPatient)
+
+    for (_ <- (0 until this.config.getP("startingDoctorsCount")).toList) {
+      this.hospital.doctors.append(new Doctor(maxStaffID))
+      this.maxStaffID += 1
+    }
+    for (_ <- (0 until this.config.getP("startingNursesCount")).toList) {
+      this.hospital.nurses.append(new Nurse(maxStaffID))
+      this.maxStaffID += 1
+    }
+  }
 }

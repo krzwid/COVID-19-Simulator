@@ -1,13 +1,17 @@
-import Model.Config.BasicConfig
 import Model.Simulation
 
 object Application {
   def main(args: Array[String]): Unit = {
-    val simulation = new Simulation
-    simulation.configure("src\\main\\resources\\parameters.txt", "src\\main\\resources\\patients.txt")
-
-//    simulation.simulate // it should return History
-//    config.printMap
-
+    try {
+      val rscPath = "src\\main\\resources\\"
+      val simulation = new Simulation()
+      simulation.configure(rscPath + "parameters.txt", rscPath + "patients.txt")
+      val history = simulation.simulate
+//      history.printGraphs
+    } catch {
+      case e: Exception => e.printStackTrace()
+    } finally {
+      println("Shut down - I hope you enjoyed the results!")
+    }
   }
 }

@@ -15,6 +15,10 @@ class Patient(
     this(id, infected = true, daysSinceInfected = 0, covidSymptoms = true, otherDisease = false, otherDiseaseSince = 0)
   }
 
+  def this(a: Array[String]) = {
+    this(a(0).toInt, a(1).toBoolean, a(2).toInt, a(3).toBoolean, a(4).toBoolean, a(5).toInt)
+  }
+
   private var daysSinceTreated: scala.collection.mutable.Map[Class[_], Int] = scala.collection.mutable.Map(
     classOf[Doctor] -> 0,
     classOf[Nurse] -> 0
