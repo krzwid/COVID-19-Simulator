@@ -33,7 +33,10 @@ class Staff(
 
   // new fuctions
   def goTo(room: Room): Unit = {
+    this.room.goOut(this)
+
     this.room = room
+    this.room.goIn(this)
   }
 
   def transformToPatient: StaffPatient = {

@@ -49,16 +49,18 @@ class Patient(
   }
 
   def goTo(room: Room): Unit = {
-    this.room = room
+//    this.room = room
+    throw new UnsupportedOperationException("Patient cannot move anywhere")
   }
 
   // new functions
 
-  def ifDies: Boolean = {
-    true
+  def ifDies(par: Int): Boolean = {
+    val p = par.toDouble / 100
+    this.infected && scala.util.Random.nextDouble() < p
   }
 
-  def ifRecover: Boolean = {
-    true
+  def ifRecover(limit : Int): Boolean = {
+    this.infectedSince > limit
   }
 }
