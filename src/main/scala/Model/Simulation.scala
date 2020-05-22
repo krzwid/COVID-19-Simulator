@@ -37,7 +37,7 @@ class Simulation(var config: Config,
     // HERE USE YOUR FUCKING ENGINE TO DO STUFF
     this.fillHospital()
 
-    for (_ <- (1 to 10)) {
+    for (_ <- (1 to this.config.getP("DurationInDays"))) {
       engine.startNewDay
       while (!engine.isNewDay) {
         engine.nextStep
