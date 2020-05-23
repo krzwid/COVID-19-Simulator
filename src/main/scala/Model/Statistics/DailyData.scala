@@ -41,4 +41,22 @@ class DailyData {
   private var countStaff: Int = 0
 
   private var mortality: Double = 0
+
+  // -----
+  // STATYSTYKI Z DANEGO DNIA:
+  // - liczba wszystkich zarazonych
+  // - liczba pokazujacych objawy
+  // - ilosc osob ktore umarly na covid (pacjenci/personel)
+  // - ilosc osob ktore zostaly zarazone covidem (pacjenci/personel)
+  // - ilosc osob ktore wyzdrowialy z covidu (pacjenci/personel)
+
+  // - ilosc osob ktore umarly na inne choroby (pacjenci/personel)
+  // - ilosc osob ktore umarly na to i to (pacjenci/personel)
+  // - ilosc osob ktore wyzdrowialy z innych chorob (pacjenci)
+  // - liczba chorych w szpitalu (na poczatku dnia)
+  // -----
+
+  def countMortality(): Unit = {
+    this.mortality = 0.0
+  }
 }

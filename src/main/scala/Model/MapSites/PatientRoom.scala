@@ -1,6 +1,8 @@
 package Model.MapSites
 
-import Model.People.{Patient, Person, Staff, Doctor}
+import java.util.Objects
+
+import Model.People.{Doctor, Patient, Person, Staff}
 
 import scala.collection.mutable.ListBuffer
 
@@ -17,7 +19,10 @@ class PatientRoom(private val capacity: Int) extends Room {
 
 //  implemented interface
   override def goIn(staff: Staff): Unit = {
+    Objects.requireNonNull(staff, "Null staff reference")
+    if (staff.getRoom != null) throw new IllegalStateException("That person already is in some room")
     staffList.addOne(staff)
+    staff.goTo(this)
     for( (key, _ ) <- daysSinceVisitedBy) {
       daysSinceVisitedBy(key) = 0
     }
@@ -30,7 +35,10 @@ class PatientRoom(private val capacity: Int) extends Room {
   }
 
   override def goOut(staff: Staff): Unit = {
+    Objects.requireNonNull(staff, "Null staff reference")
+    if (!staffList.contains(staff)) throw new IllegalStateException("There is no staff " + staff.getID.toString + " in this room")
     staffList.subtractOne(staff)
+    staff.goTo(null);
   }
 
   override def getPerson(ID: Int): Person = {

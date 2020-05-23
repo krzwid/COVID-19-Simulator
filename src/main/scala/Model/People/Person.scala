@@ -9,4 +9,5 @@ trait Person {
 
   def goTo(room: Room): Unit
   def getRoom: Room
+  def setInfection(): Unit
 }
