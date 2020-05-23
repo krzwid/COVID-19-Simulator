@@ -52,17 +52,17 @@ class BasicEngine(
   override def manageStaff: Unit = {
     hospital.floors.foreach(floor => {
       floor.getStaffRooms.head.getStaffList.foreach(staff => {
+        floor.getStaffRooms.head.goOut(staff)
         val random = scala.util.Random.nextInt(5)
         floor.getPatientRooms(random).goIn(staff)
       })
-
     })
   }
 
   override def getBackToStaffRoom: Unit = {
     hospital.floors.foreach(floor => {
       floor.getPatientRooms.foreach(patientRoom => {
-        patientRoom.getStaffList.foreach(staff =>{
+        patientRoom.getStaffList.foreach(staff => {
           patientRoom.goOut(staff)
           floor.getStaffRooms.head.goIn(staff)
         })
@@ -89,11 +89,14 @@ class BasicEngine(
     }
   }
 
-  override def putWaitingToBeds(patient: Patient): Unit = {
+  override def putWaitingToBeds(): Unit = {
+    while (this.hospital.getQueue.nonEmpty) {
+      val patient = this.hospital.getQueue.dequeue()
       val potentialRoom = hospital.floors.flatMap(_.getPatientRooms).find(_.canPutPatient)
       potentialRoom match {
         case Some(room) => room.putPatient(patient)
-        case None => println("niestety, zabraklo miejsca")
+        case None => throw new IllegalStateException("Niestety, zabraklo miejsca dla nowych chorych")
+      }
     }
   }
 
@@ -101,9 +104,10 @@ class BasicEngine(
     var countNewInfections:Int = 0
     hospital.floors.foreach(floor => {
       floor.getPatientRooms.foreach(patientRoom => {
-        patientRoom.getPatientList.foreach(patient =>{
-          patient.isRecovered(config.getP("probOfInfection"))
-          countNewInfections +=1
+        val p = (config.getP("probOfInfection") * (patientRoom.getPatientList.count(_.isInfected) + patientRoom.getStaffList.count(_.isInfected))).toDouble / 100
+        patientRoom.getStaffList.filter(!_.isInfected).foreach(staff => if(util.Random.nextDouble() < p) {
+          countNewInfections += 1
+          staff.setInfection()
         })
       })
     })
@@ -114,8 +118,7 @@ class BasicEngine(
     var countDead:Int = 0
     hospital.floors.foreach(floor => {
       floor.getPatientRooms.foreach(patientRoom => {
-        patientRoom.getPatientList.foreach(patient =>{
-          patient.isDead(config.getP("probOfDeath"))
+        patientRoom.getPatientList.filter(_.isDead(config.getP("probOfDeath"))).foreach(patient =>{
           countDead +=1
           patientRoom.removePatient(patient.getID)
         })
@@ -128,8 +131,7 @@ class BasicEngine(
     var countRecovered:Int = 0
     hospital.floors.foreach(floor => {
       floor.getPatientRooms.foreach(patientRoom => {
-        patientRoom.getPatientList.foreach(patient =>{
-          patient.isRecovered(config.getP("dayOnWhichRecovered"))
+        patientRoom.getPatientList.filter(_.isRecovered(config.getP("dayOnWhichRecovered"))).foreach(patient => {
           countRecovered +=1
           patientRoom.removePatient(patient.getID)
         })
@@ -147,8 +149,7 @@ class BasicEngine(
     var countCovidSymptoms:Int = 0
     hospital.floors.foreach(floor => {
       floor.getPatientRooms.foreach(patientRoom => {
-        patientRoom.getPatientList.foreach(patient =>{
-          patient.showsCovidSymptoms(config.getP("dayToShowSymptoms"))
+        patientRoom.getPatientList.filter(_.showsCovidSymptoms(config.getP("dayToShowSymptoms"))).foreach(patient =>{
           countCovidSymptoms +=1
           patientRoom.removePatient(patient.getID)
         })

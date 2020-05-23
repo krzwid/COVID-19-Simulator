@@ -1,7 +1,7 @@
 package Model.Statistics
 
 class History {
-  private val days: scala.collection.mutable.ListBuffer[DailyData] = new scala.collection.mutable.ListBuffer[DailyData]
+  private val days: scala.collection.mutable.ListBuffer[DailyData] = new scala.collection.mutable.ListBuffer[DailyData]()
 
   def addDay(day: DailyData): Unit = {
     days.addOne(day)

@@ -46,7 +46,7 @@ class Simulation(var config: Config,
       // -- mozliwe kilka wersji
 
       for(_ <- (1 to 100)) {
-        engine.putWaitingToBeds(this.getNewPatient)
+        engine.putWaitingToBeds()
       }
 
 
@@ -56,6 +56,7 @@ class Simulation(var config: Config,
         // wyslij personel do odpowiednich pomieszczen
         // -- mozliwe kilka wersji
         engine.manageStaff
+        println("Staff managed")
 
         // okresl kto sie zaraza
         // -- mozliwe kilka wersji
@@ -63,6 +64,7 @@ class Simulation(var config: Config,
         println("Nowe infekcje:" + countNewInfections)
         //powrot staffu do kanciapy
         engine.getBackToStaffRoom
+        println("Staff returned to StaffRoom")
         engine.nextStep
       }
       day = day + 1

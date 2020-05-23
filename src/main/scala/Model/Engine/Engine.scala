@@ -23,7 +23,7 @@ trait Engine {
 
   def sendInfectedStaffToQueue: Unit
 
-  def putWaitingToBeds(patient: Patient): Unit
+  def putWaitingToBeds(): Unit
 
   def spreadInfection: Int
 

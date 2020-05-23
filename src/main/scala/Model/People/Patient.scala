@@ -24,7 +24,7 @@ class Patient(
     classOf[Nurse] -> 0
   )
 
-  private var room: Room = null
+  private var room: Room = _
 
   // implementations
 
@@ -75,5 +75,9 @@ class Patient(
       return true
     }
     false
+  }
+
+  override def setInfection(): Unit = {
+    this.infected = true
   }
 }
