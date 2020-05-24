@@ -1,5 +1,3 @@
-import Model.Config.BasicConfig
-import Model.People.Doctor
 import Model.Simulation
 
 object Application {
@@ -9,7 +7,13 @@ object Application {
       val simulation = new Simulation()
       simulation.configure(rscPath + "parameters.txt", rscPath + "patients.txt")
       val history = simulation.simulate
-      history.printGraphs()
+
+
+      //test of drawing plot
+      val infections: Array[Int] =Array(1,2,3,4,5)
+      history.printInfection(5, infections)
+
+
     } catch {
       case e: Exception => e.printStackTrace()
     } finally {
