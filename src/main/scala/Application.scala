@@ -10,8 +10,7 @@ object Application {
 
 
 //      //test of drawing plot
-//      val infections: Array[Int] = Array(1,2,3,4,5)
-//      history.printInfection(5, infections)
+      history.doAllPlots()
 
 
     } catch {

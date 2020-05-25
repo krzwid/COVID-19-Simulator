@@ -6,3 +6,4 @@ build.sbt
 *.history
 *output
 *.png
+plots

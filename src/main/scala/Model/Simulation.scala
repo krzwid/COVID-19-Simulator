@@ -46,25 +46,25 @@ class Simulation(var config: Config,
       // -- mozliwe kilka wersji
 
       for(_ <- (1 to 100)) {
-        engine.putWaitingToBeds()
+        hospital.addPatientToQueue(this.getNewPatient)
       }
-
+      engine.putWaitingToBeds()
 
       var countNewInfections: Int = 0
       while (!engine.isNewDay) {
-        println(engine.getHour + ":" + engine.getMinute)
+        //println(engine.getHour + ":" + engine.getMinute)
         // wyslij personel do odpowiednich pomieszczen
         // -- mozliwe kilka wersji
         engine.manageStaff
-        println("Staff managed")
+        //println("Staff managed")
 
         // okresl kto sie zaraza
         // -- mozliwe kilka wersji
-        countNewInfections += engine.spreadInfection
-        println("Nowe infekcje:" + countNewInfections)
+        engine.spreadInfection
+        //println("Nowe infekcje:" + countNewInfections)
         //powrot staffu do kanciapy
         engine.getBackToStaffRoom
-        println("Staff returned to StaffRoom")
+        //println("Staff returned to StaffRoom")
         engine.nextStep
       }
       day = day + 1
@@ -73,20 +73,21 @@ class Simulation(var config: Config,
 
       // okresl kto umarl           - do kostnicy
       // -- mozliwe kilka wersji
-      val countNewDeaths = engine.killThoseBastards
-      println("Zginelo:" + countNewDeaths)
+
+
 
       // okresl kto dostal objawow  - (jesli personel, to do kolejki dla chorych)
       // -- mozliwe kilka wersji
-      val countNewDiagnosed = engine.revealCovidSymptoms
+      engine.revealCovidSymptoms
 
       // okresl kto wyzdrowial      - wyrzuc ze szpitala (ewentualnie przywroc personel)
       // -- mozliwe kilka wersji
-      val countCured = engine.curePatients
+      engine.curePatients
 
       // zapisz historie
       // -- jedna jedyna i niezmienna
       val dailyData = engine.getDailyData
+      println("Pacjentowe nowe infekcje:" + dailyData.newCovidInfectionsPatients)
       history.addDay(dailyData)
       // print to console
       // ................
