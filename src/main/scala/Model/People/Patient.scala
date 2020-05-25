@@ -81,8 +81,12 @@ class Patient(
     false
   }
 
-  override def setInfection(): Unit = {
+  override def setInfection(infected: Boolean): Unit = {
     this.infected = true
+  }
+
+  override def revealCovidSymptoms(): Unit = {
+    this.covidSymptoms = true
   }
 
   def haveOtherDisease: Boolean = {
@@ -91,5 +95,10 @@ class Patient(
 
   def getOtherDiseaseSince: Int = {
     this.otherDiseaseSince
+  }
+
+  def endOtherDisease(): Unit = {
+    this.otherDisease = otherDisease
+    this.otherDiseaseSince = 0
   }
 }

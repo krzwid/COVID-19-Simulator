@@ -141,7 +141,7 @@ class BasicEngine(
             case _: Staff => dailyData.newCovidInfectionsStaff += 1
             case _: Patient => dailyData.newCovidInfectionsPatients += 1
           }
-          person.setInfection()
+          person.setInfection(true)
       }))
     })
   }
@@ -197,7 +197,7 @@ class BasicEngine(
           .filter(patient => { patient.haveOtherDisease && scala.util.Random.nextDouble() < calculateProbabilityOfRecoveryFromOtherDiseases(patient) })
           .foreach(patient => {
             dailyData.curedFromOtherDiseases += 1
-            // set other disease to FALSE
+            patient.endOtherDisease()
         })
       })
     })
@@ -241,7 +241,7 @@ class BasicEngine(
       .filter( _.isInfected )
       .filter( scala.util.Random.nextDouble() < calculateProbabilityOfShowingSymptoms(_) ).foreach(staff => {
         dailyData.showsCovidSymptoms += 1
-        // show covid symptoms
+        staff.revealCovidSymptoms()
     })
 
     hospital.floors.foreach(floor => {
@@ -250,7 +250,7 @@ class BasicEngine(
           .filter( _.isInfected )
           .filter( scala.util.Random.nextDouble() < calculateProbabilityOfShowingSymptoms(_) ).foreach(patient => {
             dailyData.showsCovidSymptoms += 1
-            // show covid symptoms
+            patient.revealCovidSymptoms()
         })
       })
     })

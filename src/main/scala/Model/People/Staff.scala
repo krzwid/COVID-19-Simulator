@@ -40,7 +40,11 @@ class Staff(
     new StaffPatient(ID, infected, infectionSince, covidSymptoms, this.getClass.toString)
   }
 
-  override def setInfection(): Unit = {
+  override def setInfection(infected: Boolean): Unit = {
     this.infected = true
+  }
+
+  override def revealCovidSymptoms(): Unit = {
+    this.covidSymptoms = true
   }
 }

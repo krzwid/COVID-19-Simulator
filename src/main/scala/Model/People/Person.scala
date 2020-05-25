@@ -9,5 +9,6 @@ trait Person {
 
   def goTo(room: Room): Unit
   def getRoom: Room
-  def setInfection(): Unit
+  def setInfection(infected: Boolean): Unit
+  def revealCovidSymptoms(): Unit
 }
