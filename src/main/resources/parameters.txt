@@ -7,3 +7,7 @@ probOfDeath=5
 dayOnWhichRecovered=14
 probOfInfection=1
 dayToShowSymptoms=5
+howManyRoomsOnFloor=6
+patientRoomCapacity=6
+newPatientsEachDay=100
+endHour=18
