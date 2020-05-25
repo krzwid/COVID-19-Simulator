@@ -18,17 +18,30 @@ class History {
     this.days.toList
   }
 
-  def printInfection(howManyDays: Int, infectedEachDay: Array[Int]): Unit = {
-    val data = Seq.tabulate(howManyDays) { i =>
-      Point(i.toDouble, infectedEachDay(i))
-    }
-    ScatterPlot(data)
-      .xAxis()
-      .yAxis()
-      .frame()
-      .xLabel("x")
-      .yLabel("y")
-      .render()
-      .write(new File("abcd.png"))
-  }
+//  // methods to draw plots
+//
+//  private def drawPlot(howManyDays: Int, values: Array[Int], title: String, filePath: String): Unit = {
+//    val data = Seq.tabulate(howManyDays) { i =>
+//      Point(i.toDouble, values(i))
+//    }
+//    ScatterPlot(data)
+//      .xAxis()
+//      .yAxis()
+//      .frame()
+//      .xLabel("x")
+//      .yLabel("y")
+//      .title(title)
+//      .render()
+//      .write(new File(filePath))
+//  }
+//
+//  def printInfection(howManyDays: Int, infectedEachDay: Array[Int]): Unit = {
+//    drawPlot(howManyDays, infectedEachDay, "infected each day", "abcd.png")
+//  }
+//
+//  def printDeadFromCovidStaff(): Unit = {
+//    val list = getHistory
+//    val arrayValues = list.map(_.deadForCovidStaff).toArray
+//    drawPlot(arrayValues.length, arrayValues, "Dead from Covid", "deadForCovid.jpg")
+//  }
 }

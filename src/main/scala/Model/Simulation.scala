@@ -6,7 +6,7 @@ import Model.Config.{BasicConfig, Config}
 import Model.Engine.{BasicEngine, Engine}
 import Model.MapSites.{Hospital, PatientRoom, StaffRoom}
 import Model.People.{Doctor, Nurse, Patient, Staff}
-import Model.Statistics.History
+import Model.Statistics.{DailyData, History}
 
 import scala.collection.mutable
 
@@ -86,7 +86,10 @@ class Simulation(var config: Config,
 
       // zapisz historie
       // -- jedna jedyna i niezmienna
-      engine.writeHistory
+      val dailyData = engine.getDailyData
+      history.addDay(dailyData)
+      // print to console
+      // ................
     }
 
     // return history of disease
@@ -106,7 +109,7 @@ class Simulation(var config: Config,
       }
       floor.addStaffRoom(new StaffRoom)
     })
-    this.engine = new BasicEngine(this.config, this.hospital, this.history)
+    this.engine = new BasicEngine(this.config, this.hospital)
   }
 
   private def getNewPatient: Patient = {

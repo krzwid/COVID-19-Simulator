@@ -2,13 +2,13 @@ package Model.Engine
 
 import Model.Config.Config
 import Model.MapSites.Hospital
-import Model.People.{Doctor, Patient}
+import Model.People.{Doctor, Patient, StaffPatient}
 import Model.Statistics.{DailyData, History}
 
 class BasicEngine(
                  config: Config,
                  hospital: Hospital,
-                 history: History
+//                 history: History
                  ) extends Engine {
   private var hour: Int = 0
   private var minute: Int = 0
@@ -106,7 +106,11 @@ class BasicEngine(
       floor.getPatientRooms.foreach(patientRoom => {
         val p = (config.getP("probOfInfection") * (patientRoom.getPatientList.count(_.isInfected) + patientRoom.getStaffList.count(_.isInfected))).toDouble / 100
         patientRoom.getStaffList.filter(!_.isInfected).foreach(staff => if(util.Random.nextDouble() < p) {
-          countNewInfections += 1
+          dailyData.newCovidInfectionsStaff += 1
+          staff.setInfection()
+        })
+        patientRoom.getPatientList.filter(!_.isInfected).foreach(staff => if(util.Random.nextDouble() < p) {
+          dailyData.newCovidInfectionsPatients += 1
           staff.setInfection()
         })
       })
@@ -119,7 +123,10 @@ class BasicEngine(
     hospital.floors.foreach(floor => {
       floor.getPatientRooms.foreach(patientRoom => {
         patientRoom.getPatientList.filter(_.isDead(config.getP("probOfDeath"))).foreach(patient =>{
-          countDead +=1
+//          if (patient.getClass == classOf[StaffPatient])
+//          patient match {
+//            case staffPatient: StaffPatient => dailyData.
+//          }
           patientRoom.removePatient(patient.getID)
         })
       })
@@ -139,11 +146,6 @@ class BasicEngine(
     })
     countRecovered
   }
-  
-  override def writeHistory: Unit = {
-    history.addDay(this.dailyData)
-    this.dailyData = null
-  }
 
   override def revealCovidSymptoms: Int = {
     var countCovidSymptoms:Int = 0
@@ -156,5 +158,12 @@ class BasicEngine(
       })
     })
     countCovidSymptoms
+  }
+
+  override def getDailyData: DailyData = {
+    if (dailyData == null) throw new IllegalStateException("Cannot return non-existing story' object")
+    val toReturn = dailyData
+    dailyData = null
+    toReturn
   }
 }
