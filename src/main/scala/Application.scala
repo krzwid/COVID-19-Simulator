@@ -9,9 +9,9 @@ object Application {
       val history = simulation.simulate
 
 
-      //test of drawing plot
-      val infections: Array[Int] =Array(1,2,3,4,5)
-      history.printInfection(5, infections)
+//      //test of drawing plot
+//      val infections: Array[Int] = Array(1,2,3,4,5)
+//      history.printInfection(5, infections)
 
 
     } catch {

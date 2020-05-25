@@ -2,7 +2,7 @@ package Model.Engine
 
 import Model.MapSites.Hospital
 import Model.People.Patient
-import Model.Statistics.History
+import Model.Statistics.{DailyData, History}
 
 trait Engine {
 
@@ -34,5 +34,6 @@ trait Engine {
   def curePatients: Int
 
   // last, most important
-  def writeHistory: Unit
+//  def writeHistory: Unit
+  def getDailyData: DailyData
 }
