@@ -80,4 +80,8 @@ class Patient(
   override def setInfection(): Unit = {
     this.infected = true
   }
+
+  def haveOtherDisease: Boolean = {
+    this.otherDisease
+  }
 }
