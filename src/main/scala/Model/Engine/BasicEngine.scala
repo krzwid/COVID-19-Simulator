@@ -185,9 +185,9 @@ class BasicEngine(
     // doctors and nurses which don't show symptoms
     (this.hospital.doctors ++ this.hospital.nurses)
       .filter(person => {person.isInfected && scala.util.Random.nextDouble() < calculateProbabilityOfRecoveryFromCovid(person)})
-      .foreach(_ => {
+      .foreach(person => {
         dailyData.curedFromCovidStaff += 1
-        // _.setInfection() ----- SET INFECTION TO FALSE
+        person.setInfection(false)
       })
 
     // cure from other diseases
