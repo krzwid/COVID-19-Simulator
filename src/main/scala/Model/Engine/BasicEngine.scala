@@ -41,6 +41,16 @@ class BasicEngine(
 
   // ---
 
+  override def countPatients(): Unit = {
+    hospital.floors.foreach(floor => {
+      floor.getPatientRooms.foreach(patientRoom => {
+        patientRoom.getPatientList.foreach(_ => this.dailyData.patientsInHospital += 1)
+      })
+    })
+  }
+
+  // ---
+
   private val howToSendStaffToFloors: () => Unit = () => {
     for (i <- this.hospital.doctors.indices.toList) {
       this.hospital.floors(i % this.hospital.floors.length).addStaffToStaffRoom( this.hospital.doctors(i) )
@@ -136,6 +146,7 @@ class BasicEngine(
   override def spreadInfection(): Unit = {
     hospital.floors.foreach(floor => {
       floor.getPatientRooms.foreach(patientRoom => patientRoom.getAllPeople
+        .filter( !_.isInfected )
         .filter( scala.util.Random.nextDouble() < calculateProbabilityOfInfection(config, patientRoom, _) ).foreach(person => {
           person match {
             case _: Staff => dailyData.newCovidInfectionsStaff += 1
@@ -153,6 +164,7 @@ class BasicEngine(
   }
 
   override def killThoseBastards(): Unit = {
+    // kill unlucky losers
     hospital.floors.foreach(floor => {
       floor.getPatientRooms.foreach(patientRoom => {
         patientRoom.getPatientList.filter( scala.util.Random.nextDouble() < calculateProbabilityOfDeath(_) ).foreach(patient => {
@@ -165,6 +177,13 @@ class BasicEngine(
 
           patientRoom.removePatient(patient.getID)
         })
+      })
+    })
+
+    // increment counter for lucky survivors
+    hospital.floors.foreach(floor => {
+      floor.getPatientRooms.foreach(patientRoom => {
+        patientRoom.getPatientList.foreach(_.incrementDaysCounters())
       })
     })
   }

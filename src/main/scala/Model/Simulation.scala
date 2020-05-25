@@ -49,6 +49,8 @@ class Simulation(var config: Config,
       }
       engine.putNewPatientsToBeds()
 
+      engine.countPatients()
+
       engine.sendStaffToFloors()
 
       while (!engine.isNewDay) {

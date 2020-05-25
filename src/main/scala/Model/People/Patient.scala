@@ -101,4 +101,9 @@ class Patient(
     this.otherDisease = otherDisease
     this.otherDiseaseSince = 0
   }
+
+  def incrementDaysCounters(): Unit = {
+    if (this.isInfected) this.daysSinceInfected += 1
+    if (this.otherDisease) this.otherDiseaseSince += 1
+  }
 }
