@@ -1,37 +1,37 @@
 package Model.Engine
 
-import Model.MapSites.Hospital
-import Model.People.Patient
 import Model.Statistics.{DailyData, History}
 
 trait Engine {
 
   def getHour: Int
   def getMinute: Int
-  def startNewDay: Unit
+  def startNewDay(): Unit
   def isNewDay: Boolean
-  def nextStep: Unit
+  def nextStep(): Unit
 
-  def addNewPatients: Unit
+//  def addNewPatients(howMany: Int): Unit
 
   // decide if and where to send staff
-  def manageStaff: Unit
+  def sendStaffToFloors(): Unit
 
-  def getBackToStaffRoom: Unit
+  def manageStaff(): Unit
 
-  def sendNewStaff: Unit
+  def backToStaffRoom(): Unit
 
-  def sendInfectedStaffToQueue: Unit
+  def sendNewStaff(): Unit
 
-  def putWaitingToBeds(): Unit
+  def sendInfectedStaffToQueue(): Unit
 
-  def spreadInfection: Unit
+  def putNewPatientsToBeds(): Unit
 
-  def killThoseBastards: Unit
+  def spreadInfection(): Unit
 
-  def revealCovidSymptoms: Unit
+  def killThoseBastards(): Unit
 
-  def curePatients: Unit
+  def revealCovidSymptoms(): Unit
+
+  def curePatients(): Unit
 
   // last, most important
   def getDailyData: DailyData

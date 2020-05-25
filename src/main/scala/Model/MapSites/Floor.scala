@@ -4,27 +4,19 @@ import Model.People.Staff
 
 import scala.collection.mutable.ListBuffer
 
-class Floor {
-  private val staffRooms = ListBuffer[StaffRoom]()
-  private val patientRooms = ListBuffer[PatientRoom]()
+class Floor(howManyRoomsOnFloor: Int, patientRoomCapacity: Int) {
+  private val staffRooms = List.fill(1)(new StaffRoom)
+  private val patientRooms = List.fill(howManyRoomsOnFloor)(new PatientRoom(patientRoomCapacity))
 
   def freeBeds: Int ={
     patientRooms.map(_.freeBeds).sum
   }
 
-  def getPatientRooms: ListBuffer[PatientRoom] = {
+  def getPatientRooms: List[PatientRoom] = {
     patientRooms
   }
 
-  def addPatientRoom(patientRoom: PatientRoom): Unit = {
-    patientRooms.addOne(patientRoom)
-  }
-
-  def addStaffRoom(staffRoom: StaffRoom): Unit = {
-    staffRooms.addOne(staffRoom)
-  }
-
-  def getStaffRooms: ListBuffer[StaffRoom] = {
+  def getStaffRooms: List[StaffRoom] = {
     this.staffRooms
   }
 

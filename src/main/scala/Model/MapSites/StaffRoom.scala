@@ -34,4 +34,8 @@ class StaffRoom extends Room {
   def getStaffList: ListBuffer[Staff] = {
     staffList
   }
+
+  override def getAllPeople: List[Person] = {
+    staffList.toList
+  }
 }

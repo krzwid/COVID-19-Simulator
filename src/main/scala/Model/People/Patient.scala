@@ -48,6 +48,10 @@ class Patient(
     false
   }
 
+  def getCovidSymptoms: Boolean = {
+    this.covidSymptoms
+  }
+
   def getRoom: Room = {
     this.room
   }
@@ -83,5 +87,9 @@ class Patient(
 
   def haveOtherDisease: Boolean = {
     this.otherDisease
+  }
+
+  def getOtherDiseaseSince: Int = {
+    this.otherDiseaseSince
   }
 }

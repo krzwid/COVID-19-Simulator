@@ -3,15 +3,14 @@ package Model.MapSites
 import Model.People.{Doctor, Nurse, Patient, Staff}
 
 import scala.collection.mutable
-import scala.collection.mutable.ListBuffer
 
-class Hospital(howManyFloors: Int) {
-  val floors: List[Floor] = List.fill(howManyFloors)(new Floor)
+class Hospital(howManyFloors: Int, howManyRoomsOnFloor: Int, patientRoomCapacity: Int) {
+  val floors: List[Floor] = List.fill(howManyFloors)(new Floor(howManyRoomsOnFloor, patientRoomCapacity))
   val queue = new mutable.Queue[Patient]()
   val doctors = new mutable.ListBuffer[Doctor]
   val nurses = new mutable.ListBuffer[Nurse]
 
-  def freeBeds: Int ={
+  def freeBeds: Int = {
     floors.map(_.freeBeds).sum
   }
 
