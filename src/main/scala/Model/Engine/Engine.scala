@@ -12,6 +12,8 @@ trait Engine {
 
 //  def addNewPatients(howMany: Int): Unit
 
+  def countPatients(): Unit
+
   // decide if and where to send staff
   def sendStaffToFloors(): Unit
 

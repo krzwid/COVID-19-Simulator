@@ -1,13 +1,13 @@
 startingPatientsCount=100
 startingDoctorsCount=7
 startingNursesCount=20
-numberOfFloors=500
+numberOfFloors=10
 DurationInDays=50
 probOfDeath=5
 dayOnWhichRecovered=14
 probOfInfection=1
 dayToShowSymptoms=5
-howManyRoomsOnFloor=6
+howManyRoomsOnFloor=30
 patientRoomCapacity=6
-newPatientsEachDay=100
+newPatientsEachDay=20
 endHour=18

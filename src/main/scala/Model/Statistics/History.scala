@@ -63,7 +63,7 @@ class History {
     }
 
     BarChart
-      .custom(valuesToPlot.map(Bar.apply), spacing = Some(1), barRenderer = Some(labeledByColor))
+      .custom(valuesToPlot.map(Bar.apply), spacing = Some(5), barRenderer = Some(labeledByColor))
       .standard(xLabels = labels)
       .hline(0)
       .title(title)
