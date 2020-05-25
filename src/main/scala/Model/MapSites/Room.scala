@@ -7,4 +7,5 @@ trait Room {
   def goOut(staff: Staff): Unit
   def canGoIn(staff: Staff): Boolean
   def getPerson(ID: Int): Person
+  def getAllPeople: List[Person]
 }

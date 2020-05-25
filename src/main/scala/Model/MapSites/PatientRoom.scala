@@ -71,4 +71,8 @@ class PatientRoom(private val capacity: Int) extends Room {
   def canPutPatient: Boolean = {
     this.freeBeds > 0
   }
+
+  override def getAllPeople: List[Person] = {
+    patientsList.toList ++ staffList.toList
+  }
 }

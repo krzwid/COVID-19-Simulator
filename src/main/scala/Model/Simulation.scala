@@ -34,63 +34,39 @@ class Simulation(var config: Config,
   }
 
   def simulate: History = {
-    Objects.requireNonNull(config, "Empty configuration")
+    Objects.requireNonNull(config, "Null configuration")
 
-    // HERE USE YOUR FUCKING ENGINE TO DO STUFF
     this.fillHospital()
 
     for (_ <- (1 to this.config.getP("DurationInDays"))) {
-      engine.startNewDay
-
-      // porozsylaj pacjentow z kolejki do lozek
-      // -- mozliwe kilka wersji
-
-      for(_ <- (1 to 100)) {
-        hospital.addPatientToQueue(this.getNewPatient)
-      }
-      engine.putWaitingToBeds()
-
-      var countNewInfections: Int = 0
-      while (!engine.isNewDay) {
-        //println(engine.getHour + ":" + engine.getMinute)
-        // wyslij personel do odpowiednich pomieszczen
-        // -- mozliwe kilka wersji
-        engine.manageStaff
-        //println("Staff managed")
-
-        // okresl kto sie zaraza
-        // -- mozliwe kilka wersji
-        engine.spreadInfection
-        //println("Nowe infekcje:" + countNewInfections)
-        //powrot staffu do kanciapy
-        engine.getBackToStaffRoom
-        //println("Staff returned to StaffRoom")
-        engine.nextStep
-      }
       day = day + 1
       println("Dzień numer: " + this.day)
 
+      engine.startNewDay()
 
-      // okresl kto umarl           - do kostnicy
-      // -- mozliwe kilka wersji
+      for(_ <- (1 to this.config.getP("newPatientsEachDay"))) {
+        hospital.addPatientToQueue(this.getNewPatient)
+      }
+      engine.putNewPatientsToBeds()
 
+      engine.sendStaffToFloors()
 
+      while (!engine.isNewDay) {
+        engine.manageStaff()
+        engine.spreadInfection()
+        engine.backToStaffRoom()
 
-      // okresl kto dostal objawow  - (jesli personel, to do kolejki dla chorych)
-      // -- mozliwe kilka wersji
-      engine.revealCovidSymptoms
+        engine.nextStep()
+      }
 
-      // okresl kto wyzdrowial      - wyrzuc ze szpitala (ewentualnie przywroc personel)
-      // -- mozliwe kilka wersji
-      engine.curePatients
+      engine.revealCovidSymptoms()
+      engine.sendInfectedStaffToQueue()
+      engine.killThoseBastards()
+      engine.curePatients()
 
-      // zapisz historie
-      // -- jedna jedyna i niezmienna
       val dailyData = engine.getDailyData
-      println("Pacjentowe nowe infekcje:" + dailyData.newCovidInfectionsPatients)
       history.addDay(dailyData)
-      // print to console
-      // ................
+//      println("Pacjentowe nowe infekcje:" + dailyData.newCovidInfectionsPatients)
     }
 
     // return history of disease
@@ -103,13 +79,7 @@ class Simulation(var config: Config,
     // parse patients database
     this.config.getPatientsData.filter(_.length == 6).foreach(this.PotentialPatientsDatabase.enqueue)
 
-    this.hospital = new Hospital(this.config.getParameters.getOrElse("numberOfFloors", 0))
-    this.hospital.floors.foreach(floor => {
-      for ( _ <- (1 to 5)) {
-        floor.addPatientRoom(new PatientRoom(6))
-      }
-      floor.addStaffRoom(new StaffRoom)
-    })
+    this.hospital = new Hospital(this.config.getP("numberOfFloors"), this.config.getP("howManyRoomsOnFloor"), this.config.getP("patientRoomCapacity"))
     this.engine = new BasicEngine(this.config, this.hospital)
   }
 
@@ -122,16 +92,13 @@ class Simulation(var config: Config,
     for (_ <- (0 to this.config.getP("startingPatientsCount")).toList)
       this.hospital.addPatientToQueue(getNewPatient)
 
-    for (i <- (0 until this.config.getP("startingDoctorsCount")).toList) {
-      val doctor = new Doctor(maxStaffID)
-      this.hospital.doctors.append(doctor)
+    for (_ <- (0 until this.config.getP("startingDoctorsCount")).toList) {
+      this.hospital.doctors.append( new Doctor(maxStaffID) )
       this.maxStaffID += 1
-      this.hospital.floors(i%5).addStaffToStaffRoom(doctor)
     }
-    for (i <- (0 until this.config.getP("startingNursesCount")).toList) {
-      val nurse = new Nurse(maxStaffID)
-      this.hospital.nurses.append(nurse)
-      this.hospital.floors(i%5).addStaffToStaffRoom(nurse)
+
+    for (_ <- (0 until this.config.getP("startingNursesCount")).toList) {
+      this.hospital.nurses.append( new Nurse(maxStaffID) )
       this.maxStaffID += 1
     }
   }
