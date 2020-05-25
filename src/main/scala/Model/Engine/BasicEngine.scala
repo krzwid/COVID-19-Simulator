@@ -1,13 +1,13 @@
 package Model.Engine
 
 import Model.Config.Config
-import Model.MapSites.Hospital
+import Model.MapSites.{Hospital, PatientRoom, Room}
 import Model.People.{Doctor, Patient, StaffPatient}
 import Model.Statistics.{DailyData, History}
 
 class BasicEngine(
                  config: Config,
-                 hospital: Hospital,
+                 hospital: Hospital
 //                 history: History
                  ) extends Engine {
   private var hour: Int = 0
@@ -89,10 +89,14 @@ class BasicEngine(
     }
   }
 
+  private val findRoomForPatient: (Patient) => Option[PatientRoom] = (patient) => {
+    hospital.floors.flatMap(_.getPatientRooms).find(_.canPutPatient)
+  }
+
   override def putWaitingToBeds(): Unit = {
     while (this.hospital.getQueue.nonEmpty) {
       val patient = this.hospital.getQueue.dequeue()
-      val potentialRoom = hospital.floors.flatMap(_.getPatientRooms).find(_.canPutPatient)
+      val potentialRoom = findRoomForPatient(patient)
       potentialRoom match {
         case Some(room) => room.putPatient(patient)
         case None => throw new IllegalStateException("Niestety, zabraklo miejsca dla nowych chorych")
@@ -100,11 +104,14 @@ class BasicEngine(
     }
   }
 
-  override def spreadInfection: Int = {
-    var countNewInfections:Int = 0
+  private val calculatePropabilityOfInfection: (Config, PatientRoom) => Double = (config, room) => {
+    (config.getP("probOfInfection") * (room.getPatientList.count(_.isInfected) + room.getStaffList.count(_.isInfected))).toDouble / 100
+  }
+
+  override def spreadInfection: Unit = {
     hospital.floors.foreach(floor => {
       floor.getPatientRooms.foreach(patientRoom => {
-        val p = (config.getP("probOfInfection") * (patientRoom.getPatientList.count(_.isInfected) + patientRoom.getStaffList.count(_.isInfected))).toDouble / 100
+        val p = calculatePropabilityOfInfection(config, patientRoom)
         patientRoom.getStaffList.filter(!_.isInfected).foreach(staff => if(util.Random.nextDouble() < p) {
           dailyData.newCovidInfectionsStaff += 1
           staff.setInfection()
@@ -115,49 +122,48 @@ class BasicEngine(
         })
       })
     })
-    countNewInfections
   }
 
-  override def killThoseBastards: Int = {
-    var countDead:Int = 0
+  override def killThoseBastards: Unit = {
     hospital.floors.foreach(floor => {
       floor.getPatientRooms.foreach(patientRoom => {
         patientRoom.getPatientList.filter(_.isDead(config.getP("probOfDeath"))).foreach(patient =>{
-//          if (patient.getClass == classOf[StaffPatient])
-//          patient match {
-//            case staffPatient: StaffPatient => dailyData.
-//          }
+          if (patient.getClass == classOf[StaffPatient] && patient.isInfected) dailyData.deadForCovidStaff += 1
+          else if (patient.isInfected && patient.haveOtherDisease) dailyData.diedForCovidAndOtherCauses += 1
+          else if (patient.isInfected) dailyData.diedForCovidPatients += 1
+          else dailyData.diedForOtherCausesPatients += 1
+
           patientRoom.removePatient(patient.getID)
         })
       })
     })
-    countDead
   }
 
-  override def curePatients: Int = {
-    var countRecovered:Int = 0
+  override def curePatients: Unit = {
     hospital.floors.foreach(floor => {
       floor.getPatientRooms.foreach(patientRoom => {
         patientRoom.getPatientList.filter(_.isRecovered(config.getP("dayOnWhichRecovered"))).foreach(patient => {
-          countRecovered +=1
+          if (patient.getClass == classOf[StaffPatient] && patient.isInfected) dailyData.curedFromCovidStaff += 1
+          else if (patient.isInfected) dailyData.curedFromCovidPatients += 1
+          else dailyData.curedFromOtherDiseases += 1
+          // DO POPRAWY
+
           patientRoom.removePatient(patient.getID)
         })
       })
     })
-    countRecovered
   }
 
-  override def revealCovidSymptoms: Int = {
+  override def revealCovidSymptoms: Unit = {
     var countCovidSymptoms:Int = 0
     hospital.floors.foreach(floor => {
       floor.getPatientRooms.foreach(patientRoom => {
         patientRoom.getPatientList.filter(_.showsCovidSymptoms(config.getP("dayToShowSymptoms"))).foreach(patient =>{
-          countCovidSymptoms +=1
+          dailyData.showsCovidSymptoms += 1
           patientRoom.removePatient(patient.getID)
         })
       })
     })
-    countCovidSymptoms
   }
 
   override def getDailyData: DailyData = {
