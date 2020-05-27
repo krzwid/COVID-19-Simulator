@@ -53,8 +53,8 @@ In src/main/resources/parameters.txt file there are several parameters to setup 
 - probabilityOfInfection=1
 
 ### Plots
-![Infected-COVID-Patients](./plots/Infected-COVID-Patients.png)
-![Daily-new-deaths-COVID-and-other](./plots/Daily-new-deaths-COVID-and-other.png)
-![Shows-COVID-symptoms](./plots/Shows-COVID-symptoms.png)
-![Daily-new-other-illnesses-deaths-Patients](./plots/Daily-new-other-illnesses-deaths-Patients.png)
+![Infected-COVID-Patients](./results/Infected-COVID-Patients.png)
+![Daily-new-deaths-COVID-and-other](./results/Daily-new-deaths-COVID-and-other.png)
+![Shows-COVID-symptoms](./results/Shows-COVID-symptoms.png)
+![Daily-new-other-illnesses-deaths-Patients](./results/Daily-new-other-illnesses-deaths-Patients.png)
 
