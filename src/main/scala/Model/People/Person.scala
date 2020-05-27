@@ -3,12 +3,13 @@ package Model.People
 import Model.MapSites.Room
 
 trait Person {
-  def getID: Int
-  def isInfected: Boolean
-  def infectedSince: Int
-
   def goTo(room: Room): Unit
-  def getRoom: Room
-  def setInfection(infected: Boolean): Unit
   def revealCovidSymptoms(): Unit
+
+  def setInfection(infected: Boolean): Unit
+
+  def isInfected: Boolean
+  def getdaysSinceInfected: Int
+  def getID: Int
+  def getRoom: Room
 }

@@ -7,12 +7,7 @@ object Application {
       val simulation = new Simulation()
       simulation.configure(rscPath + "parameters.txt", rscPath + "patients.txt")
       val history = simulation.simulate
-
-
-//      //test of drawing plot
       history.doAllPlots()
-
-
     } catch {
       case e: Exception => e.printStackTrace()
     } finally {

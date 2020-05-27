@@ -2,9 +2,9 @@ package Model.MapSites
 
 import java.util.Objects
 
-import Model.People.{Doctor, Patient, Person, Staff}
-
 import scala.collection.mutable.ListBuffer
+
+import Model.People.{Doctor, Patient, Person, Staff}
 
 class PatientRoom(private val capacity: Int) extends Room {
   private var patientsList = ListBuffer[Patient]()
@@ -18,20 +18,18 @@ class PatientRoom(private val capacity: Int) extends Room {
   }
 
 //  implemented interface
-  override def goIn(staff: Staff): Unit = {
+  override def goIn(staff: Staff): Boolean = {
     Objects.requireNonNull(staff, "Null staff reference")
-    if (staff.getRoom != null) throw new IllegalStateException("That person already is in some room")
-    staffList.addOne(staff)
-    staff.goTo(this)
-    for( (key, _ ) <- daysSinceVisitedBy) {
-      daysSinceVisitedBy(key) = 0
+    if (staff.getRoom != null) throw new IllegalStateException("That person is already in some room")
+    if(this.canGoIn(staff)) {
+      staffList.addOne(staff)
+      staff.goTo(this)
+      for( (key, _ ) <- daysSinceVisitedBy) {
+        daysSinceVisitedBy(key) = 0
+        return true
+      }
     }
-  }
-
-  override def canGoIn(staff: Staff): Boolean = {
-    if (staff.isInstanceOf[Doctor]) {
-      !staffList.exists(_.isInstanceOf[Doctor])
-    } else true
+    false
   }
 
   override def goOut(staff: Staff): Unit = {
@@ -41,21 +39,17 @@ class PatientRoom(private val capacity: Int) extends Room {
     staff.goTo(null);
   }
 
+  override def canGoIn(staff: Staff): Boolean = {
+    if (staff.isInstanceOf[Doctor]) {
+      !staffList.exists(_.isInstanceOf[Doctor])
+    } else true
+  }
+
   override def getPerson(ID: Int): Person = {
     patientsList.find(_.getID.equals(ID)).head
   }
 
 //  additional methods to take care of patients
-  def getPatientList: ListBuffer[Patient] = {
-    this.patientsList
-  }
-  def getStaffList: ListBuffer[Staff] = {
-    this.staffList
-  }
-  def freeBeds: Int = {
-    this.capacity - patientsList.size
-  }
-
   def putPatient(patient: Patient): Boolean = {
     if(this.canPutPatient) {
       patientsList.addOne(patient)
@@ -64,15 +58,27 @@ class PatientRoom(private val capacity: Int) extends Room {
     false
   }
 
-  def removePatient(ID: Int): Unit = {
-    patientsList = patientsList.filter(_.getID != ID)
-  }
-
   def canPutPatient: Boolean = {
     this.freeBeds > 0
   }
 
+  def freeBeds: Int = {
+    this.capacity - patientsList.size
+  }
+
+  def removePatient(ID: Int): Unit = {
+    patientsList = patientsList.filter(_.getID != ID)
+  }
+
+  //getters
   override def getAllPeople: List[Person] = {
     patientsList.toList ++ staffList.toList
+  }
+
+  def getPatientList: ListBuffer[Patient] = {
+    this.patientsList
+  }
+  def getStaffList: ListBuffer[Staff] = {
+    this.staffList
   }
 }

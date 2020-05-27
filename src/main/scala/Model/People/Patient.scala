@@ -16,27 +16,52 @@ class Patient(
   }
 
   def this(a: Array[String]) = {
-    this(a(0).toInt, a(1).toBoolean, a(2).toInt, a(3).toBoolean, a(4).toBoolean, a(5).toInt)
-  }
+this(a(0).toInt, a(1).toBoolean, a(2).toInt, a(3).toBoolean, a(4).toBoolean, a(5).toInt)
+}
 
   private var daysSinceTreated: scala.collection.mutable.Map[Class[_], Int] = scala.collection.mutable.Map(
-    classOf[Doctor] -> 0,
-    classOf[Nurse] -> 0
+  classOf[Doctor] -> 0,
+  classOf[Nurse] -> 0
   )
 
   private var room: Room = _
 
-  // implementations
+  // implemented interface
+  override def goTo(room: Room): Unit = {
+    throw new UnsupportedOperationException("Patient cannot move anywhere")
+  }
+
+  override def revealCovidSymptoms(): Unit = {
+    this.covidSymptoms = true
+  }
+
+  override def setInfection(infected: Boolean): Unit = {
+    this.infected = true
+  }
+
+  override def isInfected: Boolean = {
+    this.infected
+  }
+
+  //USELESS
+//  def isInfected(parameter : Int): Boolean = {
+//    val p = parameter.toDouble / 100
+//    if(this.infected && scala.util.Random.nextDouble() < p){
+//      this.infected = true
+//      return true
+//    }
+//    false
+//  }
+
+
 
   def getID: Int = {
     this.ID
   }
 
-  def isInfected: Boolean = {
-    this.infected
-  }
 
-  def infectedSince: Int = {
+
+  def getdaysSinceInfected: Int = {
     this.daysSinceInfected
   }
 
@@ -56,10 +81,6 @@ class Patient(
     this.room
   }
 
-  def goTo(room: Room): Unit = {
-//    this.room = room
-    throw new UnsupportedOperationException("Patient cannot move anywhere")
-  }
 
   // new functions
 
@@ -69,25 +90,13 @@ class Patient(
   }
 
   def isRecovered(limit : Int): Boolean = {
-    this.infectedSince > limit
+    this.getdaysSinceInfected > limit
   }
 
-  def isInfected(par : Int): Boolean = {
-    val p = par.toDouble / 100
-    if(this.infected && scala.util.Random.nextDouble() < p){
-      this.infected = true
-      return true
-    }
-    false
-  }
 
-  override def setInfection(infected: Boolean): Unit = {
-    this.infected = true
-  }
 
-  override def revealCovidSymptoms(): Unit = {
-    this.covidSymptoms = true
-  }
+
+
 
   def haveOtherDisease: Boolean = {
     this.otherDisease

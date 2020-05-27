@@ -9,15 +9,15 @@ import scala.collection.mutable.ListBuffer
 class StaffRoom extends Room {
   private val staffList = ListBuffer[Staff]()
 
-  override def goIn(staff: Staff): Unit = {
+  //implemented interface
+  override def goIn(staff: Staff): Boolean = {
     Objects.requireNonNull(staff, "Null staff reference")
-    if (staff.getRoom != null) throw new IllegalStateException("That person already is in some room")
+    if (staff.getRoom != null){
+      throw new IllegalStateException("That person already is in some room")
+    }
     staffList.addOne(staff)
     staff.goTo(this)
-  }
-
-  override def canGoIn(staff: Staff): Boolean = {
-    true //capacity of StaffRoom is inf
+    true
   }
 
   override def goOut(staff: Staff): Unit = {
@@ -27,15 +27,20 @@ class StaffRoom extends Room {
     staff.goTo(null);
   }
 
+  override def canGoIn(staff: Staff): Boolean = {
+    true //capacity of StaffRoom is inf
+  }
+
   override def getPerson(ID: Int): Person = {
     staffList.find(_.getID.equals(ID)).head
   }
 
-  def getStaffList: ListBuffer[Staff] = {
-    staffList
-  }
-
   override def getAllPeople: List[Person] = {
     staffList.toList
+  }
+
+  //getters
+  def getStaffList: ListBuffer[Staff] = {
+    staffList
   }
 }

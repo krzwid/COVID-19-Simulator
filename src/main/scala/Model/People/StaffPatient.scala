@@ -18,12 +18,15 @@ class StaffPatient(
 
   def transformToStaff(): Staff = {
     var newStaff: Staff = null
+
     if (classAsString == classOf[Doctor].toString) {
       newStaff = new Doctor(ID, infected, daysSinceInfected, covidSymptoms)
     }
+
     if (classAsString == classOf[Nurse].toString) {
       newStaff = new Nurse(ID, infected, daysSinceInfected, covidSymptoms)
     }
+
     newStaff
   }
 }

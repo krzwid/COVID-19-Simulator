@@ -34,7 +34,7 @@ class DailyData {
   var showsCovidSymptoms: Int = 0
 
   var deadForCovidStaff: Int = 0
-  var diedForCovidPatients: Int = 0
+  var deadForCovidPatients: Int = 0
 
   var newCovidInfectionsStaff: Int = 0
   var newCovidInfectionsPatients: Int = 0
@@ -46,11 +46,7 @@ class DailyData {
 
   var curedFromOtherDiseases: Int = 0
 
-  var diedForCovidAndOtherCauses: Int = 0
+  var deadForCovidAndOtherCauses: Int = 0
 
   var patientsInHospital: Int = 0
-
-  // methods
-
-
 }

@@ -5,6 +5,6 @@ trait Config {
 //  def getData: String
   def getPatientsData: List[Array[String]]
   def getParameters: Map[String, Int]
-  def getP(key: String): Int
+  def getParametersInt(key: String): Int
   def getF(key: String): Int => Int
 }

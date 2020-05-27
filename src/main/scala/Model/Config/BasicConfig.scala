@@ -58,7 +58,7 @@ class BasicConfig extends Config {
     this.patientsLines
   }
 
-  override def getP(key: String): Int = {
+  override def getParametersInt(key: String): Int = {
     if (this.parameters.keySet.contains(key)) this.parameters(key)
     else throw new NoSuchElementException("There is no such parameter: \"" + key + "\"")
   }

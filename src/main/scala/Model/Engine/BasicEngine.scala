@@ -30,7 +30,7 @@ class BasicEngine(
   }
 
   override def isNewDay: Boolean = {
-    this.hour >= this.config.getP("endHour")
+    this.hour >= this.config.getParametersInt("endHour")
   }
 
   override def nextStep(): Unit = {
@@ -70,7 +70,7 @@ class BasicEngine(
   // ---
 
   private val findNextRoomForStaff: (Staff, Floor) => Room = (_, floor) => {
-    floor.getPatientRooms(scala.util.Random.nextInt( this.config.getP("howManyRoomsOnFloor") ))
+    floor.getPatientRooms(scala.util.Random.nextInt( this.config.getParametersInt("howManyRoomsOnFloor") ))
   }
 
   override def manageStaff(): Unit = {
@@ -98,7 +98,7 @@ class BasicEngine(
   // ---
 
   override def sendNewStaff(): Unit = {
-    val lackingStaff = this.config.getP("minimalStaffLevel") - (this.hospital.nurses.length + this.hospital.doctors.length)
+    val lackingStaff = this.config.getParametersInt("minimalStaffLevel") - (this.hospital.nurses.length + this.hospital.doctors.length)
     if (lackingStaff > 0) {
       val doctor = new Doctor(1, false, 0, false)
       for (_ <- (0 until lackingStaff).toList) {
@@ -140,7 +140,7 @@ class BasicEngine(
   // ---
 
   private val calculateProbabilityOfInfection: (Config, Room, Person) => Double = (config, room, _) => {
-    (config.getP("probOfInfection") * room.getAllPeople.count(_.isInfected)).toDouble / 100
+    (config.getParametersInt("probOfInfection") * room.getAllPeople.count(_.isInfected)).toDouble / 100
   }
 
   override def spreadInfection(): Unit = {
@@ -160,18 +160,18 @@ class BasicEngine(
   // ---
 
   private val calculateProbabilityOfDeath: Patient => Double = _ => {
-    this.config.getP("probOfDeath").toDouble / 100
+    this.config.getParametersInt("probOfDeath").toDouble / 100
   }
 
-  override def killThoseBastards(): Unit = {
+  override def killPatients(): Unit = {
     // kill unlucky losers
     hospital.floors.foreach(floor => {
       floor.getPatientRooms.foreach(patientRoom => {
         patientRoom.getPatientList.filter( scala.util.Random.nextDouble() < calculateProbabilityOfDeath(_) ).foreach(patient => {
           if (patient.isInfected) {
             if (patient.getClass == classOf[StaffPatient]) dailyData.deadForCovidStaff += 1
-            else if (patient.haveOtherDisease) dailyData.diedForCovidAndOtherCauses += 1
-            else dailyData.diedForCovidPatients += 1
+            else if (patient.haveOtherDisease) dailyData.deadForCovidAndOtherCauses += 1
+            else dailyData.deadForCovidPatients += 1
           }
           else dailyData.diedForOtherCausesPatients += 1
 
@@ -191,12 +191,12 @@ class BasicEngine(
   // ---
 
   private val calculateProbabilityOfRecoveryFromCovid: Person => Double = person => {
-    if (person.infectedSince > this.config.getP("dayOnWhichRecovered")) 1.0
+    if (person.getdaysSinceInfected > this.config.getParametersInt("dayOnWhichRecovered")) 1.0
     else 0.0
   }
 
   private val calculateProbabilityOfRecoveryFromOtherDiseases: Patient => Double = patient => {
-    if (patient.getOtherDiseaseSince > this.config.getP("dayOnWhichRecovered")) 1.0
+    if (patient.getOtherDiseaseSince > this.config.getParametersInt("dayOnWhichRecovered")) 1.0
     else 0.0
   }
 
@@ -251,7 +251,7 @@ class BasicEngine(
   private val calculateProbabilityOfShowingSymptoms: Person => Double = person => {
 //    if (person.isInfected) this.config.getP("probabilityOfShowingSymptoms").toDouble / 100
 //    else 0.0
-    if (person.infectedSince > this.config.getP("dayToShowSymptoms")) 1.0
+    if (person.getdaysSinceInfected > this.config.getParametersInt("dayToShowSymptoms")) 1.0
     else 0.0
   }
 

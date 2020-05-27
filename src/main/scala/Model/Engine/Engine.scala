@@ -29,7 +29,7 @@ trait Engine {
 
   def spreadInfection(): Unit
 
-  def killThoseBastards(): Unit
+  def killPatients(): Unit
 
   def revealCovidSymptoms(): Unit
 
