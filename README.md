@@ -38,8 +38,9 @@ In src/main/resources/parameters.txt file there are several parameters to setup 
     - probabilityOfDeath (each day there is drawn randomly whether patient is dead or not)
     - probabilityOfInfection (each 30 minutes of simulation there is drawn randomly whether patient has been infected or not)
 
+Application is easy to develop thanks to possibility of adding new strategies of working hospital and spreading COVID-19.
+ 
 ## Sample results of simulation 
-
 
 ### Sample setup
 - numberOfFloors=50
