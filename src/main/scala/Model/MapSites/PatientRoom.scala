@@ -26,8 +26,8 @@ class PatientRoom(private val capacity: Int) extends Room {
       staff.goTo(this)
       for( (key, _ ) <- daysSinceVisitedBy) {
         daysSinceVisitedBy(key) = 0
-        return true
       }
+      return true
     }
     false
   }

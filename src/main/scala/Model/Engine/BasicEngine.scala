@@ -242,7 +242,7 @@ class BasicEngine(
         patientRoom.getPatientList.filter( scala.util.Random.nextDouble() < calculateProbabilityOfDeath(_) ).foreach(patient => {
           if (patient.isInfected) {
             if (patient.getClass == classOf[StaffPatient]) dailyData.deadForCovidStaff += 1
-            else if (patient.haveOtherDisease) dailyData.deadForCovidAndOtherCauses += 1
+            else if (patient.hasOtherDisease) dailyData.deadForCovidAndOtherCauses += 1
             else dailyData.deadForCovidPatients += 1
           }
           else dailyData.diedForOtherCausesPatients += 1
@@ -275,7 +275,7 @@ class BasicEngine(
     hospital.floors.foreach(floor => {
       floor.getPatientRooms.foreach(patientRoom => {
         patientRoom.getPatientList
-          .filter(patient => { patient.haveOtherDisease && scala.util.Random.nextDouble() < calculateProbabilityOfRecoveryFromOtherDiseases(patient) })
+          .filter(patient => { patient.hasOtherDisease && scala.util.Random.nextDouble() < calculateProbabilityOfRecoveryFromOtherDiseases(patient) })
           .foreach(patient => {
             dailyData.curedFromOtherDiseases += 1
             patient.endOtherDisease()
@@ -287,7 +287,7 @@ class BasicEngine(
     hospital.floors.foreach(floor => {
       floor.getPatientRooms.foreach(patientRoom => {
         patientRoom.getPatientList
-          .filter(patient => { patient.haveOtherDisease && scala.util.Random.nextDouble() < calculateProbabilityOfRecoveryFromCovid(patient) })
+          .filter(patient => { patient.hasOtherDisease && scala.util.Random.nextDouble() < calculateProbabilityOfRecoveryFromCovid(patient) })
           .foreach(patient => {
             if (patient.getClass == classOf[StaffPatient]) dailyData.curedFromCovidStaff += 1
             else dailyData.curedFromCovidPatients += 1
@@ -298,7 +298,7 @@ class BasicEngine(
     // remove cured patients from hospital
     hospital.floors.foreach(floor => {
       floor.getPatientRooms.foreach(patientRoom => {
-        patientRoom.getPatientList.filter(patient => {!patient.getCovidSymptoms && !patient.haveOtherDisease})
+        patientRoom.getPatientList.filter(patient => {!patient.getCovidSymptoms && !patient.hasOtherDisease})
           .foreach(patient => {
             if (patient.getClass == classOf[StaffPatient])
               this.hospital.addStaff(patient.asInstanceOf[StaffPatient].transformToStaff())

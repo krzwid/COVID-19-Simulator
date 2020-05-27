@@ -16,12 +16,12 @@ class Patient(
   }
 
   def this(a: Array[String]) = {
-this(a(0).toInt, a(1).toBoolean, a(2).toInt, a(3).toBoolean, a(4).toBoolean, a(5).toInt)
+    this(a(0).toInt, a(1).toBoolean, a(2).toInt, a(3).toBoolean, a(4).toBoolean, a(5).toInt)
 }
 
   private var daysSinceTreated: scala.collection.mutable.Map[Class[_], Int] = scala.collection.mutable.Map(
-  classOf[Doctor] -> 0,
-  classOf[Nurse] -> 0
+    classOf[Doctor] -> 0,
+    classOf[Nurse] -> 0
   )
 
   private var room: Room = _
@@ -43,47 +43,19 @@ this(a(0).toInt, a(1).toBoolean, a(2).toInt, a(3).toBoolean, a(4).toBoolean, a(5
     this.infected
   }
 
-  //USELESS
-//  def isInfected(parameter : Int): Boolean = {
-//    val p = parameter.toDouble / 100
-//    if(this.infected && scala.util.Random.nextDouble() < p){
-//      this.infected = true
-//      return true
-//    }
-//    false
-//  }
-
-
-
-  def getID: Int = {
-    this.ID
-  }
-
-
-
-  def getdaysSinceInfected: Int = {
+  override def getdaysSinceInfected: Int = {
     this.daysSinceInfected
   }
 
-  def showsCovidSymptoms(dayToShowSymptoms: Int): Boolean = {
-    if(this.daysSinceInfected >= dayToShowSymptoms) {
-      this.covidSymptoms = true
-      return true
-    }
-    false
+  override def getID: Int = {
+    this.ID
   }
 
-  def getCovidSymptoms: Boolean = {
-    this.covidSymptoms
-  }
-
-  def getRoom: Room = {
+  override def getRoom: Room = {
     this.room
   }
 
-
   // new functions
-
   def isDead(par: Int): Boolean = {
     val p = par.toDouble / 100
     this.infected && scala.util.Random.nextDouble() < p
@@ -93,21 +65,8 @@ this(a(0).toInt, a(1).toBoolean, a(2).toInt, a(3).toBoolean, a(4).toBoolean, a(5
     this.getdaysSinceInfected > limit
   }
 
-
-
-
-
-
-  def haveOtherDisease: Boolean = {
-    this.otherDisease
-  }
-
-  def getOtherDiseaseSince: Int = {
-    this.otherDiseaseSince
-  }
-
   def endOtherDisease(): Unit = {
-    this.otherDisease = otherDisease
+    this.otherDisease = false
     this.otherDiseaseSince = 0
   }
 
@@ -115,4 +74,26 @@ this(a(0).toInt, a(1).toBoolean, a(2).toInt, a(3).toBoolean, a(4).toBoolean, a(5
     if (this.isInfected) this.daysSinceInfected += 1
     if (this.otherDisease) this.otherDiseaseSince += 1
   }
+
+  def revealCovidSymptoms(dayToShowSymptoms: Int): Boolean = {
+    if(this.daysSinceInfected >= dayToShowSymptoms) {
+      this.covidSymptoms = true
+      return true
+    }
+    false
+  }
+
+  //getters
+  def getCovidSymptoms: Boolean = {
+    this.covidSymptoms
+  }
+
+  def hasOtherDisease: Boolean = {
+    this.otherDisease
+  }
+
+  def getOtherDiseaseSince: Int = {
+    this.otherDiseaseSince
+  }
+
 }

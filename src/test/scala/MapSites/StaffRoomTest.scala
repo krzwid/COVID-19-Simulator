@@ -35,18 +35,10 @@ class StaffRoomTest extends FunSuite {
     assert(staffRoom.canGoIn(staff2))
   }
 
-  test("StaffRoomTest.goOut") {
-    staffRoom.goIn(staff1)
-    staffRoom.goOut(staff1)
-    assertResult( () ) {
-    }
-  }
-
   test("StaffRoomTest.getPerson") {
     staffRoom.goIn(staff1)
     assertResult(staff1) {
       staffRoom.getPerson(100)
     }
   }
-
 }
