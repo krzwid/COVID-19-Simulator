@@ -1,6 +1,10 @@
 # COVID-19-Simulator
 A project for Scala classes at AGH UST, Poland
 
+Developed by:
+- Krzysztof Widenka, [@krzwid](https://github.com/krzwid)
+- Paweł Marszał, [@MrPaulMarshall](https://github.com/MrPaulMarshall)
+
 ## Reasons of writing this application
 
 ### About COVID
@@ -57,4 +61,3 @@ In src/main/resources/parameters.txt file there are several parameters to setup 
 ![Daily-new-deaths-COVID-and-other](./results/Daily-new-deaths-COVID-and-other.png)
 ![Shows-COVID-symptoms](./results/Shows-COVID-symptoms.png)
 ![Daily-new-other-illnesses-deaths-Patients](./results/Daily-new-other-illnesses-deaths-Patients.png)
-
