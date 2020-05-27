@@ -74,8 +74,8 @@ class Simulation(var config: Config,
     this.history
   }
 
-  def configure(parametersSrc: String, patientsSrc: String): Unit = {
-    this.config = new BasicConfig(parametersSrc, patientsSrc)
+  def configure(parametersSrc: String, patientsSrc: String, strategiesSrc: String): Unit = {
+    this.config = new BasicConfig(parametersSrc, patientsSrc, strategiesSrc)
 
     // parse patients database
     this.config.getPatientsData.filter(_.length == 6).foreach(this.PotentialPatientsDatabase.enqueue)

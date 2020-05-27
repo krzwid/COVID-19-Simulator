@@ -5,6 +5,8 @@ import Model.MapSites.{Floor, Hospital, PatientRoom, Room}
 import Model.People.{Doctor, Patient, Person, Staff, StaffPatient}
 import Model.Statistics.DailyData
 
+import scala.collection.immutable.HashMap
+
 class BasicEngine(
                  config: Config,
                  hospital: Hospital
@@ -41,6 +43,104 @@ class BasicEngine(
 
   // ---
 
+  // LAMBDAS
+
+  private val howToSendStaffToFloorsMap: Map[String, () => Unit] = HashMap[String, () => Unit](
+    "uniformly" -> (() => {
+      for (i <- this.hospital.doctors.indices.toList) {
+        this.hospital.floors(i % this.hospital.floors.length).addStaffToStaffRoom( this.hospital.doctors(i) )
+      }
+      this.hospital.doctors.clear()
+
+      for (i <- this.hospital.nurses.indices.toList) {
+        this.hospital.floors(i % this.hospital.floors.length).addStaffToStaffRoom( this.hospital.nurses(i) )
+      }
+      this.hospital.nurses.clear()
+    }),
+    "firstThoseWithMostPatients" -> (() => {
+      // to implement
+    })
+  )
+
+  private val howToSendStaffToFloors: () => Unit = howToSendStaffToFloorsMap(this.config.getF("howToSendStaffToFloors"))
+
+  // ---
+
+  private val findNextRoomForStaffMap: Map[String, (Staff, Floor) => Room] = HashMap[String, (Staff, Floor) => Room](
+    "randOnTheSameFloor" -> ((_, floor) => {
+      floor.getPatientRooms(scala.util.Random.nextInt( this.config.getParametersInt("howManyRoomsOnFloor") ))
+    })
+  )
+
+  private val findNextRoomForStaff: (Staff, Floor) => Room = findNextRoomForStaffMap(this.config.getF("findNextRoomForStaff"))
+
+  // ---
+
+  private val findRoomForPatientMap: Map[String, Patient => Option[PatientRoom]] = HashMap[String, Patient => Option[PatientRoom]](
+    "firstWithFreeBed" -> (_ => {
+      hospital.floors.flatMap(_.getPatientRooms).find(_.canPutPatient)
+    })
+  )
+
+  private val findRoomForPatient: Patient => Option[PatientRoom] = findRoomForPatientMap(this.config.getF("findRoomForPatient"))
+
+  // ---
+
+  private val calculateProbabilityOfInfectionMap: Map[String, ((Config, Room, Person) => Double)] = HashMap[String, (Config, Room, Person) => Double](
+    "linearForNumberIfInfectedInRoom" -> ((config, room, _) => {
+      (config.getParametersInt("probOfInfection") * room.getAllPeople.count(_.isInfected)).toDouble / 100
+    })
+  )
+
+  private val calculateProbabilityOfInfection: (Config, Room, Person) => Double = calculateProbabilityOfInfectionMap(this.config.getF("calculateProbabilityOfInfection"))
+
+  // ---
+
+  private val calculateProbabilityOfDeathMap: Map[String, Patient => Double] = HashMap[String, Patient => Double](
+    "simplePercentage" -> (_ => {
+      this.config.getParametersInt("probOfDeath").toDouble / 100
+    })
+  )
+
+  private val calculateProbabilityOfDeath: Patient => Double = calculateProbabilityOfDeathMap(this.config.getF("calculateProbabilityOfDeath"))
+
+  // ---
+
+  private val calculateProbabilityOfRecoveryFromCovidMap: Map[String, Person => Double] = HashMap[String, Person => Double](
+    "afterFixedDays" -> (person => {
+      if (person.getdaysSinceInfected > this.config.getParametersInt("dayOnWhichRecovered")) 1.0
+      else 0.0
+    })
+  )
+
+  private val calculateProbabilityOfRecoveryFromCovid: Person => Double = calculateProbabilityOfRecoveryFromCovidMap(this.config.getF("calculateProbabilityOfRecoveryFromCovid"))
+
+  // ---
+
+  private val calculateProbabilityOfRecoveryFromOtherDiseasesMap: Map[String, Patient => Double] = HashMap[String, Patient => Double](
+    "afterFixedDays" -> (patient => {
+      if (patient.getOtherDiseaseSince > this.config.getParametersInt("dayOnWhichRecovered")) 1.0
+      else 0.0
+    })
+  )
+
+  private val calculateProbabilityOfRecoveryFromOtherDiseases: Patient => Double = calculateProbabilityOfRecoveryFromOtherDiseasesMap(this.config.getF("calculateProbabilityOfRecoveryFromOtherDiseases"))
+
+  // ---
+
+  private val calculateProbabilityOfShowingSymptomsMap: Map[String, Person => Double] = HashMap[String, Person => Double](
+    "afterFixedDays" -> (person => {
+      if (person.getdaysSinceInfected > this.config.getParametersInt("dayToShowSymptoms")) 1.0
+      else 0.0
+    })
+  )
+
+  private val calculateProbabilityOfShowingSymptoms: Person => Double = calculateProbabilityOfShowingSymptomsMap(this.config.getF("calculateProbabilityOfShowingSymptoms"))
+
+  // ---
+
+  // IMPLEMENTATIONS OF TRAIT
+
   override def countPatients(): Unit = {
     hospital.floors.foreach(floor => {
       floor.getPatientRooms.foreach(patientRoom => {
@@ -51,27 +151,11 @@ class BasicEngine(
 
   // ---
 
-  private val howToSendStaffToFloors: () => Unit = () => {
-    for (i <- this.hospital.doctors.indices.toList) {
-      this.hospital.floors(i % this.hospital.floors.length).addStaffToStaffRoom( this.hospital.doctors(i) )
-    }
-    this.hospital.doctors.clear()
-
-    for (i <- this.hospital.nurses.indices.toList) {
-      this.hospital.floors(i % this.hospital.floors.length).addStaffToStaffRoom( this.hospital.nurses(i) )
-    }
-    this.hospital.nurses.clear()
-  }
-
   override def sendStaffToFloors(): Unit = {
     howToSendStaffToFloors()
   }
 
   // ---
-
-  private val findNextRoomForStaff: (Staff, Floor) => Room = (_, floor) => {
-    floor.getPatientRooms(scala.util.Random.nextInt( this.config.getParametersInt("howManyRoomsOnFloor") ))
-  }
 
   override def manageStaff(): Unit = {
     hospital.floors.foreach(floor => {
@@ -122,10 +206,6 @@ class BasicEngine(
 
   // ---
 
-  private val findRoomForPatient: Patient => Option[PatientRoom] = _ => {
-    hospital.floors.flatMap(_.getPatientRooms).find(_.canPutPatient)
-  }
-
   override def putNewPatientsToBeds(): Unit = {
     while (this.hospital.getQueue.nonEmpty) {
       val patient = this.hospital.getQueue.dequeue()
@@ -138,10 +218,6 @@ class BasicEngine(
   }
 
   // ---
-
-  private val calculateProbabilityOfInfection: (Config, Room, Person) => Double = (config, room, _) => {
-    (config.getParametersInt("probOfInfection") * room.getAllPeople.count(_.isInfected)).toDouble / 100
-  }
 
   override def spreadInfection(): Unit = {
     hospital.floors.foreach(floor => {
@@ -158,10 +234,6 @@ class BasicEngine(
   }
 
   // ---
-
-  private val calculateProbabilityOfDeath: Patient => Double = _ => {
-    this.config.getParametersInt("probOfDeath").toDouble / 100
-  }
 
   override def killPatients(): Unit = {
     // kill unlucky losers
@@ -189,16 +261,6 @@ class BasicEngine(
   }
 
   // ---
-
-  private val calculateProbabilityOfRecoveryFromCovid: Person => Double = person => {
-    if (person.getdaysSinceInfected > this.config.getParametersInt("dayOnWhichRecovered")) 1.0
-    else 0.0
-  }
-
-  private val calculateProbabilityOfRecoveryFromOtherDiseases: Patient => Double = patient => {
-    if (patient.getOtherDiseaseSince > this.config.getParametersInt("dayOnWhichRecovered")) 1.0
-    else 0.0
-  }
 
   override def curePatients(): Unit = {
     // doctors and nurses which don't show symptoms
@@ -247,13 +309,6 @@ class BasicEngine(
   }
 
   // ---
-
-  private val calculateProbabilityOfShowingSymptoms: Person => Double = person => {
-//    if (person.isInfected) this.config.getP("probabilityOfShowingSymptoms").toDouble / 100
-//    else 0.0
-    if (person.getdaysSinceInfected > this.config.getParametersInt("dayToShowSymptoms")) 1.0
-    else 0.0
-  }
 
   override def revealCovidSymptoms(): Unit = {
     (hospital.doctors ++ hospital.nurses)

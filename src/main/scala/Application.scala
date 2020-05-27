@@ -5,7 +5,7 @@ object Application {
     try {
       val rscPath = "src\\main\\resources\\"
       val simulation = new Simulation()
-      simulation.configure(rscPath + "parameters.txt", rscPath + "patients.txt")
+      simulation.configure(rscPath + "parameters.txt", rscPath + "patients.txt", rscPath + "strategies.txt")
       val history = simulation.simulate
       history.doAllPlots()
     } catch {

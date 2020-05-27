@@ -7,32 +7,44 @@ class BasicConfig extends Config {
   private var parametersSrc: String = _
   var parametersLines: List[String] = _
 
+  private var strategiesSrc: String = _
+  var strategiesLines: List[String] = _
+
   private var patientsSrc: String = _
   var patientsLines: List[Array[String]] = _
 
   private var parameters: Map[String, Int] = _
 
-//  private var functions: Map[String, (_) => (_)] = new HashMap[String, (_) => (_)](
-//    "f1" -> ((a: Int): => a * a),
-//
-//  )
+  private var strategies: Map[String, String] = _
 
-  def this(parametersSrc: String, patientsSrc: String) = {
+  // ---
+
+  def this(parametersSrc: String, patientsSrc: String, strategiesSrc: String) = {
     this()
-    if (parametersSrc == null || patientsSrc == null) throw new NullPointerException("Null sources paths")
+    if (parametersSrc == null || patientsSrc == null || strategiesSrc == null) throw new NullPointerException("Null sources paths")
     this.parametersSrc = parametersSrc
     this.patientsSrc = patientsSrc
+    this.strategiesSrc = strategiesSrc
     this.readData()
 
     // parse parameters to Int's
-    val mapBuilder = new mutable.HashMap[String, Int]()
+    val mapBuilder1 = new mutable.HashMap[String, Int]()
     for (line <- parametersLines) {
       val split = line.split('=')
       if (split(0).equals("") || split(1).equals("")) throw new IllegalArgumentException("Invalid file")
       if (!(split(1) forall Character.isDigit)) throw new IllegalArgumentException("Non-numerical parameter")
-      mapBuilder.put(split(0), split(1).toInt)
+      mapBuilder1.put(split(0), split(1).toInt)
     }
-    this.parameters = mapBuilder.toMap
+    this.parameters = mapBuilder1.toMap
+
+    // put strategies in Map
+    val mapBuilder2 = new mutable.HashMap[String, String]()
+    for (line <- strategiesLines) {
+      val split = line.split('=')
+      if (split(0).equals("") || split(1).equals("")) throw new IllegalArgumentException("Invalid file")
+      mapBuilder2.put(split(0), split(1))
+    }
+    this.strategies = mapBuilder2.toMap
   }
 
   private def readData(): Unit = {
@@ -42,6 +54,9 @@ class BasicConfig extends Config {
     val sourcePatients = scala.io.Source.fromFile(this.patientsSrc)
     val patientsLines = try sourcePatients.getLines().toList finally sourcePatients.close()
     this.patientsLines = patientsLines.map(e => e.split(','))
+
+    val sourceStrats = scala.io.Source.fromFile(this.strategiesSrc)
+    this.strategiesLines = try sourceStrats.getLines().toList finally sourceStrats.close()
   }
 
   def printParameters(): Unit = {
@@ -63,7 +78,8 @@ class BasicConfig extends Config {
     else throw new NoSuchElementException("There is no such parameter: \"" + key + "\"")
   }
 
-  override def getF(key: String): Int => Int = {
-    (a: Int) => a
+  override def getF(key: String): String = {
+    if (this.strategies.keySet.contains(key)) this.strategies(key)
+    else throw new NoSuchElementException("There is no such strategy: \"" + key + "\"")
   }
 }
