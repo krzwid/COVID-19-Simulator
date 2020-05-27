@@ -144,9 +144,12 @@ class BasicEngine(
   override def countPatients(): Unit = {
     hospital.floors.foreach(floor => {
       floor.getPatientRooms.foreach(patientRoom => {
-        patientRoom.getPatientList.foreach(_ => this.dailyData.patientsInHospital += 1)
+        this.dailyData.patientsInHospital += patientRoom.getPatientList.length
+        this.dailyData.infectedCovidPatients += patientRoom.getPatientList.count(_.isInfected)
       })
     })
+
+    this.dailyData.infectedCovidStaff += (this.hospital.doctors ++ this.hospital.nurses).toList.count(_.isInfected)
   }
 
   // ---
@@ -287,11 +290,13 @@ class BasicEngine(
     hospital.floors.foreach(floor => {
       floor.getPatientRooms.foreach(patientRoom => {
         patientRoom.getPatientList
-          .filter(patient => { patient.hasOtherDisease && scala.util.Random.nextDouble() < calculateProbabilityOfRecoveryFromCovid(patient) })
-          .foreach(patient => {
-            if (patient.getClass == classOf[StaffPatient]) dailyData.curedFromCovidStaff += 1
-            else dailyData.curedFromCovidPatients += 1
-        })
+          .filter(patient => {
+            patient.hasOtherDisease && scala.util.Random.nextDouble() < calculateProbabilityOfRecoveryFromCovid(patient)
+          })
+          .foreach {
+            case staffPatient: StaffPatient => dailyData.curedFromCovidStaff += 1
+            case any => dailyData.curedFromCovidPatients += 1
+          }
       })
     })
 
@@ -337,5 +342,12 @@ class BasicEngine(
     val toReturn = dailyData
     dailyData = null
     toReturn
+  }
+
+  override def staffLeavesHospital(): Unit = {
+    this.hospital.floors.foreach(floor => floor.getStaffRooms.foreach(room => room.getStaffList.foreach(staff => {
+      this.hospital.addStaff(staff)
+      room.goOut(staff)
+    })))
   }
 }

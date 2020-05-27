@@ -68,7 +68,6 @@ class Simulation(var config: Config,
       val dailyData = engine.getDailyData
       println("zginelo: " + dailyData.deadForCovidAndOtherCauses)
       history.addDay(dailyData)
-//      println("Pacjentowe nowe infekcje:" + dailyData.newCovidInfectionsPatients)
     }
     // return history of disease
     this.history

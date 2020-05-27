@@ -37,4 +37,6 @@ trait Engine {
 
   // last, most important
   def getDailyData: DailyData
+
+  def staffLeavesHospital(): Unit
 }
