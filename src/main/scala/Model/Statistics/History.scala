@@ -21,19 +21,19 @@ class History {
 
   // methods to draw plots
   def doAllPlots(): Unit = {
-    doSpecificPlot("Infected COVID (Staff)", (dailyData: DailyData) => dailyData.infectedCovidStaff)
-    doSpecificPlot("Infected COVID (Patients)", (dailyData: DailyData) => dailyData.infectedCovidPatients)
-    doSpecificPlot("Shows COVID symptoms", (dailyData: DailyData) => dailyData.showsCovidSymptoms)
-    doSpecificPlot("Daily new COVID deaths (Staff)", (dailyData: DailyData) => dailyData.deadForCovidStaff)
-    doSpecificPlot("Daily new COVID deaths (Patients)", (dailyData: DailyData) => dailyData.deadForCovidPatients)
-    doSpecificPlot("Daily new COVID cases (Staff)", (dailyData: DailyData) => dailyData.newCovidInfectionsStaff)
-    doSpecificPlot("Daily new COVID cases (Patients)", (dailyData: DailyData) => dailyData.newCovidInfectionsPatients)
-    doSpecificPlot("Daily new COVID recovered (Staff)", (dailyData: DailyData) => dailyData.curedFromCovidStaff)
-    doSpecificPlot("Daily new COVID recovered (Patients)", (dailyData: DailyData) => dailyData.curedFromCovidPatients)
-    doSpecificPlot("Daily new other illnesses deaths (Patients)", (dailyData: DailyData) => dailyData.diedForOtherCausesPatients)
-    doSpecificPlot("Daily new other illnesses recovered (Staff)", (dailyData: DailyData) => dailyData.curedFromOtherDiseases)
-    doSpecificPlot("Daily new deaths (COVID and other)", (dailyData: DailyData) => dailyData.deadForCovidAndOtherCauses)
-    doSpecificPlot("Number of patients hospital", (dailyData: DailyData) => dailyData.patientsInHospital)
+    doSpecificPlot("Infected-COVID-Staff", (dailyData: DailyData) => dailyData.infectedCovidStaff)
+    doSpecificPlot("Infected-COVID-Patients", (dailyData: DailyData) => dailyData.infectedCovidPatients)
+    doSpecificPlot("Shows-COVID-symptoms", (dailyData: DailyData) => dailyData.showsCovidSymptoms)
+    doSpecificPlot("Daily-new-COVID-deaths-Staff", (dailyData: DailyData) => dailyData.deadForCovidStaff)
+    doSpecificPlot("Daily-new-COVID-deaths-Patients", (dailyData: DailyData) => dailyData.deadForCovidPatients)
+    doSpecificPlot("Daily-new-COVID-cases-Staff", (dailyData: DailyData) => dailyData.newCovidInfectionsStaff)
+    doSpecificPlot("Daily-new-COVID-cases-Patients", (dailyData: DailyData) => dailyData.newCovidInfectionsPatients)
+    doSpecificPlot("Daily-new-COVID-recovered-Staff", (dailyData: DailyData) => dailyData.curedFromCovidStaff)
+    doSpecificPlot("Daily-new-COVID-recovered-Patients", (dailyData: DailyData) => dailyData.curedFromCovidPatients)
+    doSpecificPlot("Daily-new-other-illnesses-deaths-Patients", (dailyData: DailyData) => dailyData.diedForOtherCausesPatients)
+    doSpecificPlot("Daily-new-other-illnesses-recovered-Staff", (dailyData: DailyData) => dailyData.curedFromOtherDiseases)
+    doSpecificPlot("Daily-new-deaths-COVID-and-other", (dailyData: DailyData) => dailyData.deadForCovidAndOtherCauses)
+    doSpecificPlot("Number-of-patients-hospital", (dailyData: DailyData) => dailyData.patientsInHospital)
   }
 
   def doSpecificPlot(title: String, f: DailyData => Int): Unit = {

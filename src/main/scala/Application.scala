@@ -11,7 +11,7 @@ object Application {
     } catch {
       case e: Exception => e.printStackTrace()
     } finally {
-      println("Shutdown - I hope you enjoyed the results!")
+      println("End of simulation. Checkout plots!")
     }
   }
 }

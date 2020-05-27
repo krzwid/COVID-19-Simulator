@@ -32,7 +32,7 @@ class BasicEngine(
   }
 
   override def isNewDay: Boolean = {
-    this.hour >= this.config.getParametersInt("endHour")
+    this.hour >= this.config.getParametersInt("endHourDay")
   }
 
   override def nextStep(): Unit = {
@@ -68,7 +68,7 @@ class BasicEngine(
 
   private val findNextRoomForStaffMap: Map[String, (Staff, Floor) => Room] = HashMap[String, (Staff, Floor) => Room](
     "randOnTheSameFloor" -> ((_, floor) => {
-      floor.getPatientRooms(scala.util.Random.nextInt( this.config.getParametersInt("howManyRoomsOnFloor") ))
+      floor.getPatientRooms(scala.util.Random.nextInt( this.config.getParametersInt("numberOfRoomsOnFloor") ))
     })
   )
 
@@ -88,7 +88,7 @@ class BasicEngine(
 
   private val calculateProbabilityOfInfectionMap: Map[String, ((Config, Room, Person) => Double)] = HashMap[String, (Config, Room, Person) => Double](
     "linearForNumberIfInfectedInRoom" -> ((config, room, _) => {
-      (config.getParametersInt("probOfInfection") * room.getAllPeople.count(_.isInfected)).toDouble / 100
+      (config.getParametersInt("probabilityOfInfection") * room.getAllPeople.count(_.isInfected)).toDouble / 100
     })
   )
 
@@ -98,7 +98,7 @@ class BasicEngine(
 
   private val calculateProbabilityOfDeathMap: Map[String, Patient => Double] = HashMap[String, Patient => Double](
     "simplePercentage" -> (_ => {
-      this.config.getParametersInt("probOfDeath").toDouble / 100
+      this.config.getParametersInt("probabilityOfDeath").toDouble / 100
     })
   )
 
@@ -130,7 +130,7 @@ class BasicEngine(
 
   private val calculateProbabilityOfShowingSymptomsMap: Map[String, Person => Double] = HashMap[String, Person => Double](
     "afterFixedDays" -> (person => {
-      if (person.getdaysSinceInfected > this.config.getParametersInt("dayToShowSymptoms")) 1.0
+      if (person.getdaysSinceInfected > this.config.getParametersInt("dayToShowCovidSymptoms")) 1.0
       else 0.0
     })
   )

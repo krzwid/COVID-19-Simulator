@@ -38,7 +38,7 @@ class Simulation(var config: Config,
 
     this.fillHospital()
 
-    for (_ <- (1 to this.config.getParametersInt("DurationInDays"))) {
+    for (_ <- (1 to this.config.getParametersInt("durationInDays"))) {
       day = day + 1
       println("Dzień numer: " + this.day)
 
@@ -79,7 +79,7 @@ class Simulation(var config: Config,
     // parse patients database
     this.config.getPatientsData.filter(_.length == 6).foreach(this.PotentialPatientsDatabase.enqueue)
 
-    this.hospital = new Hospital(this.config.getParametersInt("numberOfFloors"), this.config.getParametersInt("howManyRoomsOnFloor"), this.config.getParametersInt("patientRoomCapacity"))
+    this.hospital = new Hospital(this.config.getParametersInt("numberOfFloors"), this.config.getParametersInt("numberOfRoomsOnFloor"), this.config.getParametersInt("patientRoomCapacity"))
     this.engine = new BasicEngine(this.config, this.hospital)
   }
 
