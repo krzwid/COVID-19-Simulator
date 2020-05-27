@@ -27,9 +27,9 @@ class Simulation(var config: Config,
     this(null:Config, null:Engine)
   }
 
-  def this(parametersSrc: String, patientsSrc: String) {
+  def this(parametersSrc: String, patientsSrc: String, strategiesSrc: String) {
     this()
-    this.configure(parametersSrc, patientsSrc)
+    this.configure(parametersSrc, patientsSrc, strategiesSrc)
   }
 
   //the most main function of simulation
